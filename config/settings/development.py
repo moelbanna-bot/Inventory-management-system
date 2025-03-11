@@ -1,3 +1,4 @@
+from .base import *
 from decouple import config
 
 # SECURITY WARNING: keep the secret key used in production secret!
