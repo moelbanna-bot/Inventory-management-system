@@ -9,6 +9,9 @@ __pycache__/
 # Local development settings
 *.env
 
+# Database
+db.sqlite3
+
 .idea/
 
 media/
