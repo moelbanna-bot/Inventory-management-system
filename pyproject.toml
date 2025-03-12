@@ -1,4 +1,5 @@
 [project]
+package-mode = false
 name = "inventory-management-system"
 version = "0.1.0"
 description = ""
