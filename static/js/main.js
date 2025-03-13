@@ -1,72 +1,46 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const sidebarWrapper = document.getElementById("sidebar-wrapper");
-  const contentWrapper = document.querySelector(".content-wrapper");
-  const toggleBtn = document.getElementById("toggle-sidebar");
-  const homeBtn = document.querySelector(".home-btn");
+    const sidebar = document.getElementById("sidebar");
 
-  const sidebarItems = document.querySelectorAll(
-    "#sidebar-wrapper .list-group-item"
-  );
-  const bottomNavItems = document.querySelectorAll(".bottom-nav-item");
+    const sidebarToggle = document.getElementById("sidebarToggle");
 
-  toggleBtn.addEventListener("click", function () {
-    sidebarWrapper.classList.toggle("collapsed");
-    contentWrapper.classList.toggle("expanded");
-  });
-
-  function setActiveItem(index) {
-    if (index === bottomNavItems.length - 1) return;
-
-    sidebarItems.forEach((item) => item.classList.remove("active"));
-    if (sidebarItems[index]) sidebarItems[index].classList.add("active");
-
-    bottomNavItems.forEach((item) => item.classList.remove("active"));
-    if (bottomNavItems[index]) bottomNavItems[index].classList.add("active");
-  }
-
-  sidebarItems.forEach((item, index) => {
-    item.addEventListener("click", function (e) {
-      e.preventDefault();
-      setActiveItem(index);
-    });
-  });
-
-  bottomNavItems.forEach((item, index) => {
-    if (index < bottomNavItems.length - 1) {
-      item.addEventListener("click", function (e) {
+    sidebarToggle.addEventListener("click", function (e) {
         e.preventDefault();
-        setActiveItem(index);
-      });
+
+        sidebar.classList.toggle("collapsed");
+    });
+
+    const userProfileToggle = document.getElementById("userProfileToggle");
+    const accountDropdown = document.getElementById("accountDropdown");
+
+    if (userProfileToggle && accountDropdown) {
+        userProfileToggle.addEventListener("click", function () {
+            accountDropdown.classList.toggle("show");
+        });
+
+        document.addEventListener("click", function (event) {
+            if (
+                !userProfileToggle.contains(event.target) &&
+                !accountDropdown.contains(event.target)
+            ) {
+                accountDropdown.classList.remove("show");
+            }
+        });
     }
-  });
 
-  const userSection = document.getElementById("user-section");
-  const userMenu = document.getElementById("user-menu");
+    function isMobile() {
+        return window.innerWidth <= 768;
+    }
 
-  userSection.addEventListener("click", function (e) {
-    userMenu.classList.toggle("show");
-    e.stopPropagation();
-  });
+    function adjustLayout() {
+        const mainContent = document.querySelector(".main-content");
+        if (isMobile()) {
+            mainContent.style.paddingBottom = "70px";
+        } else {
+            mainContent.style.paddingBottom = "";
+        }
+    }
 
-  const mobileUserBtn = document.getElementById("mobile-user-btn");
-  const mobileUserMenu = document.getElementById("mobile-user-menu");
+    adjustLayout();
 
-  mobileUserBtn.addEventListener("click", function (e) {
-    e.preventDefault();
-    mobileUserMenu.classList.toggle("show");
-    e.stopPropagation();
-  });
-
-  document.addEventListener("click", function () {
-    userMenu.classList.remove("show");
-    mobileUserMenu.classList.remove("show");
-  });
-
-  userMenu.addEventListener("click", function (e) {
-    e.stopPropagation();
-  });
-
-  mobileUserMenu.addEventListener("click", function (e) {
-    e.stopPropagation();
-  });
+    window.addEventListener("resize", adjustLayout);
 });
