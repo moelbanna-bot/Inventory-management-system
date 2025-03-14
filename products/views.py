@@ -14,6 +14,7 @@ class ProductListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(ProductListView, self).get_context_data(**kwargs)
         context['current_page'] = self.request.GET.get('page', 1)
+        context['latest_filter'] = self.request.GET.get('latest', False)
         return context
 
     def get_queryset(self):
