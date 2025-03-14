@@ -1,10 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Products{% endblock %}
 
-</body>
-</html>
+{% block content %}
+    <div class="container">
+        <div class="d-flex flex-wrap justify-content-center g-3">
+            {% for product in products %}
+
+
+
+
+
+
+
+
+
+
+            {% endfor %}
+        </div>
+    </div>
+
+
+
+
+
+
+
+{% endblock %}
+
+

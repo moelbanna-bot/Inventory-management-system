@@ -4,12 +4,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Product
 
 
-class ProductListView(LoginRequiredMixin, ListView):
+class ProductListView(ListView):
     model = Product
     template_name = 'products/products.html'
     paginate_by = 9
     context_object_name = 'products'
-    login_url = '/login/'
+    ordering = ['-created_at']
 
     def get_context_data(self, **kwargs):
         context = super(ProductListView, self).get_context_data(**kwargs)
