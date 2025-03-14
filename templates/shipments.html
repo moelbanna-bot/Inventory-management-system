@@ -1,0 +1,59 @@
+{% extends 'base.html'%}
+
+ {% block content %}
+
+<div class="container mt-5">
+    <h1>Shipments</h1>
+
+    <div class="my-4">
+        <div class="row">
+            <div class="col-12 col-md-10 mb-3 mb-md-0">
+                <input type="text" class="form-control" id="searchBox" placeholder="Search...">
+            </div>
+            <div class="col-12 col-md-2">
+                <button class="btn btn-custom w-100">Create Shipment</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-4">
+        <div class="row">
+            <div class="col-12 col-md-6 mb-4 mb-md-0">
+                <h3>Supplier</h3>
+                <ul class="box-button-list">
+                    <li>Booksyfi</li>
+                    <li>Bound & Beyond</li>
+                    <li>LittLinks Books</li>
+                    <li>NovelNest Supply</li>
+                    <li>PageTurner</li>
+                    <li>Macdonald</li>
+                </ul>
+            </div>
+         </div>
+         <div class="row">
+            <div class="col-12 col-md-6">
+                <h3>Status</h3>
+                <ul class="box-button-list">
+                    <li>Draft</li>
+                    <li>Sent</li>
+                    <li>Received</li>
+                </ul>
+            </div>
+         </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            {% include "components/order_shipment_card.html"%}
+             {% include "components/order_shipment_card.html"%}
+             {% include "components/order_shipment_card.html"%}
+             {% include "components/order_shipment_card.html"%}
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
+{% endblock %}
