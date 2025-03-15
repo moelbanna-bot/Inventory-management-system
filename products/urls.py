@@ -4,5 +4,5 @@ from django.conf.urls.static import static
 from .views import ProductListView
 
 urlpatterns = [
-                  path('', ProductListView.as_view(), name='product-list'),
-              ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    path('', ProductListView.as_view(), name='product-list'),
+]

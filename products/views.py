@@ -7,7 +7,7 @@ from .models import Product
 class ProductListView(ListView):
     model = Product
     template_name = 'products/products.html'
-    paginate_by = 9
+    paginate_by = 8
     context_object_name = 'products'
     ordering = ['-created_at']
 
