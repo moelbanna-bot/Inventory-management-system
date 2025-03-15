@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}Inventory{% endblock %}
+
+{% block content %}
+    <div class="container my-4">
+        <div class="mb-3">
+            <h2 class="fw-bold">Inventory</h2>
+        </div>
+        <div class="row align-items-center mb-4">
+            <div class="col-md-8 mb-3 mb-md-0">
+                <form method="GET" action="{% url 'inventory' %}">
+                    <div class="input-group shadow-sm">
+                        <input class="form-control form-control-lg border-end-0 rounded-start"
+                               type="search"
+                               placeholder="Search products..."
+                               aria-label="Search"
+                               name="q"
+                               value="{{ request.GET.q }}">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-4 d-flex justify-content-md-end">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#productModal">
+                    <i class="fas fa-plus me-1"></i> Add Product
+                </button>
+            </div>
+        </div>
+
+        {% if request.GET.q %}
+            <div class="alert alert-info mb-4">
+                Showing results for: <strong>{{ request.GET.q }}</strong>
+                <a href="{% url 'inventory' %}" class="float-end text-decoration-none">Clear search</a>
+            </div>
+        {% endif %}
+
+        <div class="row g-4">
+            {% if products %}
+                {% for product in products %}
+                    {% include 'components/product_card.html' with product=product %}
+                {% endfor %}
+            {% else %}
+                <div class="col-12 text-center py-5">
+                    <div class="empty-state">
+                        <i class="fas fa-box fa-3x text-muted mb-3"></i>
+                        <h4 class="text-muted">No products found</h4>
+                        {% if request.GET.q %}
+                            <p>No products matching "{{ request.GET.q }}"</p>
+                            <a href="{% url 'inventory' %}" class="btn btn-outline-primary mt-2">View all products</a>
+                        {% else %}
+                            <p>Start by adding your first product to inventory</p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% include 'product-form-modal.html' %}
+
+    {% if show_modal %}
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const productModal = new bootstrap.Modal(document.getElementById('productModal'));
+                productModal.show();
+            });
+        </script>
+    {% endif %}
+{% endblock %}
