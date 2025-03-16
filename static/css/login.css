@@ -1,0 +1,16 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+input.form-control {
+    background-color: #f2f2f2 !important;
+}
+
+button {
+    background-color: #356c6c !important;
+    color: white;
+    font-weight: bold !important;
+    width: 100%;
+}
