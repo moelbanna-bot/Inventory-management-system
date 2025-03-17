@@ -77,3 +77,16 @@ class EditProduct(View):
         except Product.DoesNotExist:
             messages.error(request, "Product not found")
             return redirect("inventory")
+
+
+class DeleteProduct(View):
+    def post(self, request, slug):
+        try:
+            product = Product.objects.get(slug=slug)
+            product_name = product.name
+            product.delete()
+            messages.success(request, f"Product '{product_name}' deleted successfully!")
+            return redirect("inventory")
+        except Product.DoesNotExist:
+            messages.error(request, "Product not found")
+            return redirect("inventory")
