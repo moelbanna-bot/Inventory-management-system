@@ -1,16 +1,19 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %} Products{% endblock %}
-{% block extra_css %}
-    <link href="{% static 'products/css/main.css' %}" rel="stylesheet">
-{% endblock %}
+
 
 {% block content %}
+
     <div class="container mt-5">
-        <div class="row">
-            <p class="fs-1 "> Products List</p>
-            <hr>
-        </div>
+    <div class="row">
+        {% include 'components/search-bar.html' %}
+    </div>
+    <div class="row">
+        <p class="fs-1 "> Products List</p>
+        <hr>
+    </div>
+    <div class="products-container">
         <div class="d-flex flex-wrap justify-content-center g-5">
             {% for product in products %}
                 <div class="card card-item m-3" style="width: 18rem;">
@@ -31,37 +34,14 @@
 
                 </div>
 
+
             {% endfor %}
-        </div>
-        <div class="pagination justify-content-center mt-3">
-            <ul class="pagination color">
-                {% if page_obj.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page=1"> First</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
-                    </li>
-                {% endif %}
-
-                <li class="page-item disabled">
-            <span class="page-link">
-                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
-            </span>
-                </li>
-
-                {% if page_obj.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last </a>
-                    </li>
-                {% endif %}
-            </ul>
         </div>
     </div>
 
+    <div class="pagination-wrapper text-center mt-4">
+        {% include 'components/pagination.html' %}
+    </div>
 {% endblock %}
 
-
+</div>

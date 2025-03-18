@@ -14,19 +14,16 @@ class ProductListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(ProductListView, self).get_context_data(**kwargs)
         context['current_page'] = self.request.GET.get('page', 1)
-        context['latest_filter'] = self.request.GET.get('latest', False)
+
         return context
 
     def get_queryset(self):
         try:
             query_set = super().get_queryset()
             search_query = self.request.GET.get('search')
-            latest_only = self.request.GET.get('latest')
-            if search_query:
-                query_set = query_set.filter(Q(name__iconatin=search_query) | Q(description__icontains=search_query))
 
-            if latest_only:
-                query_set = query_set.order_by('-created_at')
+            if search_query:
+                query_set = query_set.filter(Q(name__icontains=search_query) | Q(description__icontains=search_query))
 
             return query_set
         except Exception as e:
