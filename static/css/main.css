@@ -288,3 +288,43 @@ body {
         display: block;
     }
 }
+
+/*search bar*/
+.form-control:focus {
+    border-color: #2d6a63;
+    box-shadow: 0 0 0 0.25rem rgba(45, 106, 99, 0.25);
+}
+
+.serach-button {
+    background-color: #2d6a63;
+    color: #f8f9fa
+}
+
+/*pagination*/
+.page-link {
+    color: #2d6a63;
+    background-color: white;
+    border-color: #2d6a63;
+}
+
+.page-item.active .page-link {
+    background-color: #2d6a63;
+    border-color: #2d6a63;
+    color: white;
+}
+
+.page-link:hover {
+    background-color: #1e4e47;
+    border-color: #1e4e47;
+    color: white;
+}
+
+.products-container {
+    position: relative;
+    padding-bottom: 2rem;
+}
+
+.pagination-wrapper {
+    width: 100%;
+    margin-top: 2rem;
+}
