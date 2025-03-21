@@ -40,7 +40,7 @@
         <section class="order-products row">
             <div class="container mt-5">
                 <div class="row">
-                    {% include 'components/search-bar.html' with btn_value="Add Order" %}
+                    {% include 'components/search-bar.html' with btn_value="Add Order" target_modal="#addProductRecordModal" %}
                 </div>
                 <div class="row px-2">
 
@@ -49,6 +49,8 @@
             </div>
         </section>
     </div>
+
+    {% include 'orders/add-order-modal.html' %}
 
 
 

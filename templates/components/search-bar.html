@@ -4,7 +4,11 @@
         <input type="text" class="form-control rounded-start-3" name="search"
                placeholder="Search Product..."
         >
-        <button class="button-primary " type="submit">
+        <button class="button-primary" type="button"
+                {% if target_modal %}
+                data-bs-toggle="modal"
+                    data-bs-target={{ target_modal }}
+                {% endif %} >
             {{ btn_value|default:"Search" }}
         </button>
     </div>
