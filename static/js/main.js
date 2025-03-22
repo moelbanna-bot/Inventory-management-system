@@ -33,6 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function adjustLayout() {
         const mainContent = document.querySelector(".main-content");
+        if (!mainContent) return;
         if (isMobile()) {
             mainContent.style.paddingBottom = "70px";
         } else {
