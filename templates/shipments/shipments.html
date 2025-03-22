@@ -1,5 +1,8 @@
 {% extends 'base.html'%}
 
+<!--load statics files-->
+{% load static %}
+
 {% block extra_css %}
 
         <link href="{% static 'css/shipment.css' %}" rel="stylesheet">
@@ -8,7 +11,7 @@
 
  {% block content %}
 
-<div class="container mx-5 mt-5">
+<div class="container px-5 mt-5">
     <h1 class="text">Shipments</h1>
 
     <div class="my-4">
