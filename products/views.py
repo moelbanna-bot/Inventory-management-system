@@ -8,12 +8,13 @@ from .models import Product
 from .forms import ProductForm
 
 
-class ProductListView(ListView):
+class ProductListView(LoginRequiredMixin, ListView):
     model = Product
     template_name = 'products/products.html'
     paginate_by = 8
     context_object_name = 'products'
     ordering = ['-created_at']
+    login_url = 'login'
 
     def get_context_data(self, **kwargs):
         context = super(ProductListView, self).get_context_data(**kwargs)
