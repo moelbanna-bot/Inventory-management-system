@@ -10,30 +10,34 @@ from .forms import ProductForm
 
 class ProductListView(LoginRequiredMixin, ListView):
     model = Product
-    template_name = 'products/products.html'
+    template_name = "products/products.html"
     paginate_by = 8
-    context_object_name = 'products'
-    ordering = ['-created_at']
-    login_url = 'login'
+    context_object_name = "products"
+    ordering = ["-created_at"]
+    login_url = "login"
 
     def get_context_data(self, **kwargs):
         context = super(ProductListView, self).get_context_data(**kwargs)
-        context['current_page'] = self.request.GET.get('page', 1)
-
+        context["current_page"] = self.request.GET.get("page", 1)
+        context["form"] = ProductForm()
         return context
 
     def get_queryset(self):
         try:
             query_set = super().get_queryset()
-            search_query = self.request.GET.get('search')
+            search_query = self.request.GET.get("search")
 
             if search_query:
-                query_set = query_set.filter(Q(name__icontains=search_query) | Q(description__icontains=search_query))
+                query_set = query_set.filter(
+                    Q(name__icontains=search_query)
+                    | Q(description__icontains=search_query)
+                )
 
             return query_set
         except Exception as e:
             print(f"Error filtering products: {e}")
             return Product.objects.none()
+
 
 # Create your views here.
 class AddProduct(View):
@@ -42,7 +46,7 @@ class AddProduct(View):
         if form.is_valid():
             product = form.save()
             messages.success(request, f"Product '{product.name}' added successfully!")
-            return redirect("product_list")
+            return redirect("product-list")
         else:
             # Add show_modal flag to indicate we need to reopen the modal
             products = Product.objects.all()
@@ -51,17 +55,6 @@ class AddProduct(View):
                 "products/products.html",
                 {"products": products, "form": form, "show_modal": True},
             )
-
-
-class AllProducts(View):
-    def get(self, request):
-        search_query = request.GET.get("q", "")
-        if search_query:
-            products = Product.objects.filter(name__icontains=search_query)
-        else:
-            products = Product.objects.all()
-        form = ProductForm()
-        return render(request, "products/products.html", {"products": products, "form": form})
 
 
 class EditProduct(View):
@@ -81,7 +74,7 @@ class EditProduct(View):
             )
         except Product.DoesNotExist:
             messages.error(request, "Product not found")
-            return redirect("delete_product")
+            return redirect("product-list")
 
     def post(self, request, slug):
         try:
@@ -92,7 +85,7 @@ class EditProduct(View):
                 messages.success(
                     request, f"Product '{product.name}' updated successfully!"
                 )
-                return redirect("delete_product")
+                return redirect("product-list")
             else:
                 return render(
                     request,
@@ -106,7 +99,7 @@ class EditProduct(View):
                 )
         except Product.DoesNotExist:
             messages.error(request, "Product not found")
-            return redirect("delete_product")
+            return redirect("product-list")
 
 
 class DeleteProduct(View):
@@ -116,7 +109,7 @@ class DeleteProduct(View):
             product_name = product.name
             product.delete()
             messages.success(request, f"Product '{product_name}' deleted successfully!")
-            return redirect("delete_product")
+            return redirect("product-list")
         except Product.DoesNotExist:
             messages.error(request, "Product not found")
-            return redirect("delete_product")
+            return redirect("product-list")
