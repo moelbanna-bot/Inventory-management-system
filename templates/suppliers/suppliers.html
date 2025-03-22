@@ -311,97 +311,98 @@ Suppliers
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
 
             </div>
-        </div>
-        <div class="offcanvas-body">
-            <!--                supplier main info section-->
-            <section class="mb-5 d-flex flex-column justify-content-between gap-5">
-                <h2 class="text-capitalize fw-bold">Supplier name</h2>
-                <div>
-                    <div class="d-flex border-bottom p-3">
-                        <span class="fw-bold col-4">Manager name</span>
-                        <p class="mb-0 col-8">mr hambola</p>
-                    </div>
-                    <div class="d-flex border-bottom p-3">
-                        <span class="fw-bold col-4">Supplier email</span>
-                        <p class="mb-0 col-8"><a class="email"
-                                                 href="mailt0:supllier@gamil.com">supllier@gamil.com</a>
-                        </p>
-                    </div>
-                    <div class="d-flex border-bottom p-3">
-                        <span class="fw-bold col-4">Supplier address</span>
-                        <p class="mb-0 col-8">Mr.Hambolla street, Kafr ElSheikh, Egypt</p>
-                    </div>
-                    <div class="d-flex p-3">
-                        <span class="fw-bold col-4">Purchase shipments</span>
-                        <p class="mb-0 col-8">12, 54</p>
-                    </div>
-                </div>
-                <div>
-                    <button type="button" class="button-primary" data-bs-toggle="modal"
-                            data-bs-target="#updateSupplierModal">
-                        Update details
-                    </button>
-                    <button type="button" class="button-secondary" data-bs-toggle="modal"
-                            data-bs-target="#deleteSupplierModal">Delete
-                    </button>
-                </div>
-
-            </section>
-            <section class="d-flex flex-column justify-content-between gap-3">
-                <h2 class="fw-bold">Purchase order history</h2>
-                <div class="container mt-5">
-                    <div class="data-container border rounded">
-
-                        <!-- Header Row -->
-                        <div class="header bg-light">
-                            <div class="col">Purchase Order ID</div>
-                            <div class="col">Order Due Date</div>
-                            <div class="col">Status</div>
-                            <div class="col">Item Count</div>
-                            <div class="col">Order Cost</div>
+            <div class="offcanvas-body">
+                <!--                supplier main info section-->
+                <section class="mb-5 d-flex flex-column justify-content-between gap-5">
+                    <h2 class="text-capitalize fw-bold">Supplier name</h2>
+                    <div>
+                        <div class="d-flex border-bottom p-3">
+                            <span class="fw-bold col-4">Manager name</span>
+                            <p class="mb-0 col-8">mr hambola</p>
                         </div>
-
-                        <div class="data-wrapper">
-                            <!-- In case of no data yet -->
-                            <div class="d-flex flex-column justify-content-center align-items-center p-5">
-                                <i class="fa-solid fa-inbox fs-4"></i>
-                                <p class="text-muted mt-3">No purchase shipments yet</p>
-                            </div>
-                            <!-- Data Rows -->
-                            <div class="raw-data">
-                                <div class="row-data">
-                                    <div class="col">71</div>
-                                    <div class="col">1/28/2025</div>
-                                    <div class="col">
-                                        <span class="badge bg-primary">Received</span>
-                                    </div>
-                                    <div class="col">35</div>
-                                    <div class="col">$495</div>
-                                </div>
-                                <div class="row-data">
-                                    <div class="col">73</div>
-                                    <div class="col">2/22/2025</div>
-                                    <div class="col">
-                                        <span class="badge bg-danger">Draft</span>
-                                    </div>
-                                    <div class="col">79</div>
-                                    <div class="col">$573</div>
-                                </div>
-                                <div class="row-data">
-                                    <div class="col">12</div>
-                                    <div class="col">2/22/2025</div>
-                                    <div class="col">
-                                        <span class="badge bg-success">Sent</span>
-                                    </div>
-                                    <div class="col">79</div>
-                                    <div class="col">$573</div>
-                                </div>
-                            </div>
+                        <div class="d-flex border-bottom p-3">
+                            <span class="fw-bold col-4">Supplier email</span>
+                            <p class="mb-0 col-8"><a class="email"
+                                                     href="mailt0:supllier@gamil.com">supllier@gamil.com</a>
+                            </p>
+                        </div>
+                        <div class="d-flex border-bottom p-3">
+                            <span class="fw-bold col-4">Supplier address</span>
+                            <p class="mb-0 col-8">Mr.Hambolla street, Kafr ElSheikh, Egypt</p>
+                        </div>
+                        <div class="d-flex p-3">
+                            <span class="fw-bold col-4">Purchase shipments</span>
+                            <p class="mb-0 col-8">12, 54</p>
                         </div>
                     </div>
-                </div>
-            </section>
+                    <div>
+                        <button type="button" class="button-primary" data-bs-toggle="modal"
+                                data-bs-target="#updateSupplierModal">
+                            Update details
+                        </button>
+                        <button type="button" class="button-secondary" data-bs-toggle="modal"
+                                data-bs-target="#deleteSupplierModal">Delete
+                        </button>
+                    </div>
+
+                </section>
+                <section class="d-flex flex-column justify-content-between gap-3">
+                    <h2 class="fw-bold">Purchase order history</h2>
+                    <div class="container mt-5">
+                        <div class="data-container border rounded">
+
+                            <!-- Header Row -->
+                            <div class="header bg-light">
+                                <div class="col">Purchase Order ID</div>
+                                <div class="col">Order Due Date</div>
+                                <div class="col">Status</div>
+                                <div class="col">Item Count</div>
+                                <div class="col">Order Cost</div>
+                            </div>
+
+                            <div class="data-wrapper">
+                                <!-- In case of no data yet -->
+                                <div class="d-flex flex-column justify-content-center align-items-center p-5">
+                                    <i class="fa-solid fa-inbox fs-4"></i>
+                                    <p class="text-muted mt-3">No purchase shipments yet</p>
+                                </div>
+                                <!-- Data Rows -->
+                                <div class="raw-data">
+                                    <div class="row-data">
+                                        <div class="col">71</div>
+                                        <div class="col">1/28/2025</div>
+                                        <div class="col">
+                                            <span class="badge bg-primary">Received</span>
+                                        </div>
+                                        <div class="col">35</div>
+                                        <div class="col">$495</div>
+                                    </div>
+                                    <div class="row-data">
+                                        <div class="col">73</div>
+                                        <div class="col">2/22/2025</div>
+                                        <div class="col">
+                                            <span class="badge bg-danger">Draft</span>
+                                        </div>
+                                        <div class="col">79</div>
+                                        <div class="col">$573</div>
+                                    </div>
+                                    <div class="row-data">
+                                        <div class="col">12</div>
+                                        <div class="col">2/22/2025</div>
+                                        <div class="col">
+                                            <span class="badge bg-success">Sent</span>
+                                        </div>
+                                        <div class="col">79</div>
+                                        <div class="col">$573</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
         </div>
+
         <!-- ِAdd Supplier Modal -->
         <div class="modal fade" id="addSupplierModal" tabindex="-1" aria-labelledby="addSupplierModalLabel"
              aria-hidden="true">
