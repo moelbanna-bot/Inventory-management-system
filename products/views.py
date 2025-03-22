@@ -42,13 +42,13 @@ class AddProduct(View):
         if form.is_valid():
             product = form.save()
             messages.success(request, f"Product '{product.name}' added successfully!")
-            return redirect("inventory")
+            return redirect("product_list")
         else:
             # Add show_modal flag to indicate we need to reopen the modal
             products = Product.objects.all()
             return render(
                 request,
-                "inventory.html",
+                "products/products.html",
                 {"products": products, "form": form, "show_modal": True},
             )
 
@@ -61,7 +61,7 @@ class AllProducts(View):
         else:
             products = Product.objects.all()
         form = ProductForm()
-        return render(request, "inventory.html", {"products": products, "form": form})
+        return render(request, "products/products.html", {"products": products, "form": form})
 
 
 class EditProduct(View):
@@ -71,7 +71,7 @@ class EditProduct(View):
             form = ProductForm(instance=product)
             return render(
                 request,
-                "inventory.html",
+                "products/products.html",
                 {
                     "product": product,
                     "form": form,
@@ -81,7 +81,7 @@ class EditProduct(View):
             )
         except Product.DoesNotExist:
             messages.error(request, "Product not found")
-            return redirect("inventory")
+            return redirect("delete_product")
 
     def post(self, request, slug):
         try:
@@ -92,11 +92,11 @@ class EditProduct(View):
                 messages.success(
                     request, f"Product '{product.name}' updated successfully!"
                 )
-                return redirect("inventory")
+                return redirect("delete_product")
             else:
                 return render(
                     request,
-                    "inventory.html",
+                    "products/products.html",
                     {
                         "product": product,
                         "form": form,
@@ -106,7 +106,7 @@ class EditProduct(View):
                 )
         except Product.DoesNotExist:
             messages.error(request, "Product not found")
-            return redirect("inventory")
+            return redirect("delete_product")
 
 
 class DeleteProduct(View):
@@ -116,7 +116,7 @@ class DeleteProduct(View):
             product_name = product.name
             product.delete()
             messages.success(request, f"Product '{product_name}' deleted successfully!")
-            return redirect("inventory")
+            return redirect("delete_product")
         except Product.DoesNotExist:
             messages.error(request, "Product not found")
-            return redirect("inventory")
+            return redirect("delete_product")
