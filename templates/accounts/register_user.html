@@ -9,6 +9,8 @@
 {#add css file#}
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <link rel="stylesheet" href="{% static 'accounts/css/main.css' %}">
+
 {% endblock %}
 
 {#main content#}
@@ -19,6 +21,26 @@
                 <div class="card shadow my-5">
                     <div class="card-body p-4">
                         <h2 class="text-center mb-4">Register New User</h2>
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                            aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                        {% if non_field.errors %}
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                {% for error in non_field.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
+                            </div>
+                        {% endif %}
+
+
 
                         <form method="post">
                             {% csrf_token %}
@@ -26,47 +48,85 @@
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label for="f_name" class="form-label">First Name</label>
-                                    <input type="text" class="form-control" id="f_name" name="first_name"
-                                           placeholder="Enter first name">
+                                    {{ form.first_name }}
+                                    {% if form.first_name.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.first_name.errors %}
+                                                {{ error|striptags }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
                                 </div>
                                 <div class="col-md-6">
                                     <label for="l_name" class="form-label">Last Name</label>
-                                    <input type="text" class="form-control" id="l_name" name="last_name"
-                                           placeholder="Enter last name">
+                                    {{ form.last_name }}
+                                    {% if form.last_name.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.last_name.errors %}
+                                                {{ error|striptags }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
                                 </div>
                             </div>
 
                             <div class="mb-3">
                                 <label for="username" class="form-label">Username</label>
-                                <input type="text" class="form-control" id="username" name="username"
-                                       placeholder="Choose a username">
+                                {{ form.username }}
+                                {% if form.username.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.username.errors %}
+                                            {{ error|striptags }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
                             </div>
 
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" name="email"
-                                       placeholder="Enter your email">
+                                 {{ form.email }}
+                                {% if form.email.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.email.errors %}
+                                            {{ error|striptags }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
                             </div>
 
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password</label>
-                                <input type="password" class="form-control" id="password" name="password"
-                                       placeholder="Create a password">
+                                {{ form.password1 }}
+                                {% if form.password1.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.password1.errors %}
+                                            {{ error|striptags }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
                             </div>
 
                             <div class="mb-3">
                                 <label for="confirm_password" class="form-label">Confirm Password</label>
-                                <input type="password" class="form-control" id="confirm_password"
-                                       name="confirm_password" placeholder="Confirm your password">
+                                {{ form.password2 }}
+                                {% if form.confirm_password2.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.confirm_password2.errors %}
+                                            {{ error|striptags }}
+                                        {% endfor %}
                             </div>
+                                {% endif %}
 
                             <div class="mb-3">
                                 <label for="role" class="form-label">Role</label>
-                                <select class="form-select" id="role" name="role">
-                                    <option value="" selected disabled>Select a role</option>
-                                    <option value="staff">Employee</option>
-                                    <option value="user">Manager</option>
-                                </select>
+                                 {{ form.role }}
+                                {% if form.role.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.role.errors %}
+                                            {{ error|striptags }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
                             </div>
 
                             <div class="d-grid mb-3">
