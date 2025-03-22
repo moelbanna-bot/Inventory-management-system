@@ -15,7 +15,6 @@ class ProductListView(LoginRequiredMixin, ListView):
     context_object_name = "products"
     ordering = ["-created_at"]
     login_url = "login"
-
     def get_context_data(self, **kwargs):
         context = super(ProductListView, self).get_context_data(**kwargs)
         context["current_page"] = self.request.GET.get("page", 1)
@@ -46,6 +45,7 @@ class AddProduct(View):
         if form.is_valid():
             product = form.save()
             messages.success(request, f"Product '{product.name}' added successfully!")
+
             return redirect("product-list")
         else:
             # Add show_modal flag to indicate we need to reopen the modal
@@ -86,6 +86,7 @@ class EditProduct(View):
                     request, f"Product '{product.name}' updated successfully!"
                 )
                 return redirect("product-list")
+
             else:
                 return render(
                     request,
@@ -100,6 +101,8 @@ class EditProduct(View):
         except Product.DoesNotExist:
             messages.error(request, "Product not found")
             return redirect("product-list")
+
+
 
 
 class DeleteProduct(View):
