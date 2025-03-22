@@ -1,0 +1,34 @@
+<div class="col-12 col-lg-4 p-3 ">
+    <div class="card  " data-bs-toggle="offcanvas" href="#offcanvasRight" role="button"
+         aria-controls="offcanvasRight">
+        <div class="card-body ">
+            <h5 class="card-title fw-bold mb-3 text-capitalize">{{supplier.name}}</h5>
+
+            <h6 class="card-subtitle mb-3 text-body-secondary "><i
+                    class="fa-regular fa-envelope "></i> {{supplier.email}}</h6>
+            <h6 class="card-subtitle mb-3 text-body-secondary ">
+                <i class="fa-solid fa-phone"></i> {{supplier.phone}}</h6>
+            <h6 class="card-subtitle mb-3 text-body-secondary text-truncate">
+                <i class="fa-solid fa-location-dot"></i>
+                {{supplier.address}}
+            </h6>
+            <div class="d-flex align-items-center mb-3">
+                <h6 class="card-subtitle text-body-secondary my-0 me-2"><i class="fa-solid fa-truck"></i>
+                    Purchase shipments
+                </h6>
+                <span class="badge text-body-secondary rounded-pill" style="background-color: #448886">
+                        {{supplier.total_purchase_shipments}}
+                    </span>
+
+            </div>
+            <div class="d-flex  ">
+                <h6 class="card-subtitle my-0 text-body-secondary me-2"><i class="fa-solid fa-cart-shopping"></i>
+                    Purchase orders
+                </h6>
+                <span class="badge text-body-secondary rounded-pill" style="background-color: #448886">
+        {{supplier.total_purchase_orders}}
+    </span>
+            </div>
+        </div>
+    </div>
+</div>
