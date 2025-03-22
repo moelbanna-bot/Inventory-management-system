@@ -7,7 +7,7 @@
 
     <div class="container mt-5">
     <div class="row">
-        {% include 'components/search-bar.html' %}
+        {% include 'components/search-bar.html' with target_modal="#productModal" %}
     </div>
     <div class="row">
         <p class="fs-1 "> Products List</p>
@@ -45,6 +45,7 @@
     <div class="pagination-wrapper text-center mt-4">
         {% include 'components/pagination.html' %}
     </div>
+    {% include 'product-form-modal.html' %}
 {% endblock %}
 
 </div>
