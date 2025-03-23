@@ -1,59 +1,80 @@
 {% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% load widget_tweaks %}
 
 {% block extra_css %}
-
 {% endblock %}
 
 {% block content %}
-
     <div class="container px-5 mt-5">
-
         <section class="info row">
-            <div class="order-info col-12">
-                <div class="row border-bottom border-light-subtle py-3 ">
+            <div class="order-info col-12" data-supermarket-id="{{ supermarket.id }}">
+                <div class="row border-bottom border-light-subtle py-3">
                     <span class="col-3">Reference Number</span>
-                    <span class="col-9">3324-43433-3232323</span>
+                    <span class="col-9">{{ temp_ref_number }}</span>
                 </div>
-                <div class="row border-bottom border-light-subtle py-3 ">
+                <div class="row border-bottom border-light-subtle py-3">
                     <span class="col-3">Order status</span>
-                    <span class="col-9">New</span>
+                    <span class="col-9">{{ status }}</span>
                 </div>
-                <div class="row border-bottom border-light-subtle py-3 ">
+                <div class="row border-bottom border-light-subtle py-3">
                     <span class="col-3">Order date</span>
-                    <span class="col-9">3/21/2025, 9:52 AM</span>
+                    <span class="col-9">{{ order_date|date:"n/j/Y, g:i A" }}</span>
                 </div>
-                <div class="row border-bottom border-light-subtle py-3 ">
-                    <span class="col-3">Order count</span>
-                    <span class="col-9">0</span>
+                <div class="row border-bottom border-light-subtle py-3">
+                    <span class="col-3">Products count</span>
+                    <span class="col-9" id="order-count">0</span>
                 </div>
-                <div class="row py-3 ">
+                <div class="row py-3">
                     <span class="col-3">Customer</span>
-                    <!--here we will use the supermarkets.all to get the drop menu -->
-                    <span class="col-9">{{ supermarket.email }}</span>
+                    <span class="col-9" id="customer-email">{{ supermarket.email }}</span>
                 </div>
                 <div class="order-controls col-12 d-flex my-3 gap-3 mt-5">
-                    <button class="button-primary">Place Order</button>
-                    <button class="button-secondary">Cancel</button>
+                    <button class="button-primary" id="place-order-btn">Place Order</button>
+                    <button class="button-secondary" id="cancel-order-btn">Cancel</button>
                 </div>
             </div>
         </section>
+
         <section class="order-products row">
             <div class="container mt-5">
                 <div class="row">
-                    {% include 'components/search-bar.html' with btn_value="Add Order" target_modal="#addProductRecordModal" %}
+                    {% include 'components/search-bar.html' with btn_value="Add Product" target_modal="#addProductRecordModal" %}
                 </div>
                 <div class="row px-2">
-
-                    {% include 'components/table-card.html' %}
+                    <div class="card border-0 shadow-sm rounded-4">
+                        <div class="card-body p-4">
+                            <div class="mb-3">
+                                <div class="row px-2 py-2 bg-light rounded-3 mb-3">
+                                    <div class="d-none d-md-block col-3">ID</div>
+                                    <div class="col-6 col-md-4">Product</div>
+                                    <div class="col-4 col-md-3">Quantity</div>
+                                    <div class="col-2 text-end">Action</div>
+                                </div>
+                                <div id="product-list" class="product-list">
+                                    <!-- Products will be added dynamically via JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
+
+        <!-- Form for submitting order data -->
+        <form id="order-form" method="POST" action="{% url 'create_order' %}">
+            {% csrf_token %}
+            <input type="hidden" id="supermarket-id-hidden" name="supermarket_id" value="{{ supermarket.id }}">
+            <div id="product-data-container">
+                <!-- Product data will be added here via JavaScript -->
+            </div>
+        </form>
     </div>
 
     {% include 'orders/add-record-modal.html' %}
+{% endblock %}
 
-
-
-
-
+{% block extra_js %}
+    <script src="{% static 'js/order-management.js' %}"></script>
 {% endblock %}
