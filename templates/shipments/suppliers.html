@@ -6,72 +6,72 @@
 
 <!--title-->
 {% block title %}
-Suppliers
+    Suppliers
 {% endblock %}
 
 
 <!--loading css file-->
 {% block extra_css %}
-<link href="{% static 'css/supplier.css' %}" rel="stylesheet">
+    <link href="{% static 'css/supplier.css' %}" rel="stylesheet">
 {% endblock %}
 
 
 <!--main content-->
 {% block content %}
-<div class="container  mt-5 px-5">
-    <h2 class="fw-bold">Suppliers</h2>
-    <!--  search bar and add supplier button-->
-    <div class="row">
-        {% include 'components/search-bar.html' with btn_value="Add supplier" target_modal="#addSupplierModal" %}
+    <div class="container  mt-5 px-5">
+        <h2 class="fw-bold">Suppliers</h2>
+        <!--  search bar and add supplier button-->
+        <div class="row">
+            {% include 'components/search-bar.html' with btn_value="Add supplier" target_modal="#addSupplierModal" %}
 
-    </div>
+        </div>
 
-    <!--  supplier list-->
-    <div class="row">
-        {% for target in targets %}
-        {% include 'components/supplier_supermarket_card.html' %}
-        {% endfor %}
-
-
-        <!-- ِAdd Supplier Modal -->
-        <div class="modal fade" id="addSupplierModal" tabindex="-1" aria-labelledby="addSupplierModalLabel"
-             aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title fw-bold" id="addSupplierModalLabel">Add Supplier</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <!-- Add form fields for supplier details -->
-                        <form>
-                            <div class="mb-3">
-                                <label for="supplierName" class="form-label">Supplier Name</label>
-                                <input type="text" class="form-control" id="supplierName">
-                            </div>
-                            <div class="mb-3">
-                                <label for="supplierEmail" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="supplierEmail">
-                            </div>
-                            <div class="mb-3">
-                                <label for="supplierAddress" class="form-label">Address</label>
-                                <textarea class="form-control" id="supplierAddress" rows="2"></textarea>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class=" button-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class=" button-primary">Save Supplier</button>
+        <!--  supplier list-->
+        <div class="row">
+            {% for target in suppliers %}
+                {% include 'components/supplier_supermarket_card.html' %}
+            {% endfor %}
 
 
+            <!-- ِAdd Supplier Modal -->
+            <div class="modal fade" id="addSupplierModal" tabindex="-1" aria-labelledby="addSupplierModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title fw-bold" id="addSupplierModalLabel">Add Supplier</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Add form fields for supplier details -->
+                            <form>
+                                <div class="mb-3">
+                                    <label for="supplierName" class="form-label">Supplier Name</label>
+                                    <input type="text" class="form-control" id="supplierName">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="supplierEmail" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="supplierEmail">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="supplierAddress" class="form-label">Address</label>
+                                    <textarea class="form-control" id="supplierAddress" rows="2"></textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class=" button-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class=" button-primary">Save Supplier</button>
+
+
+                        </div>
                     </div>
                 </div>
             </div>
+
         </div>
 
     </div>
-
-</div>
 
 
 {% endblock %}
