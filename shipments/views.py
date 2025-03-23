@@ -1,7 +1,11 @@
+from django.shortcuts import redirect, render
+from django.views import View
 from django.views.generic import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q, Count
-from .models import Supplier, Shipment
+from django.contrib import messages
+from .forms import SupplierForm
+from .models import Supplier
 
 
 class SupplierListView(LoginRequiredMixin, ListView):
@@ -10,11 +14,12 @@ class SupplierListView(LoginRequiredMixin, ListView):
     context_object_name = "suppliers"
     ordering = ["name"]
     login_url = "login"
-    paginate_by = 8
+    paginate_by = 6
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["current_page"] = self.request.GET.get("page", 1)
+        context["form"] = SupplierForm()
         return context
 
     def get_queryset(self):
@@ -36,3 +41,20 @@ class SupplierListView(LoginRequiredMixin, ListView):
         except Exception as e:
             print(f"Error filtering suppliers: {e}")
             return Supplier.objects.none()
+
+
+class AddSupplierView(View):
+    def post(self, request):
+        form = SupplierForm(request.POST)
+        if form.is_valid():
+            supplier = form.save()
+            messages.success(request, f"Supplier '{supplier.name}' added successfully!")
+            return redirect("suppliers-list")  # Adjust this to your actual URL name
+        else:
+            # Add show_modal flag to indicate we need to reopen the modal
+            suppliers = Supplier.objects.all()
+            return render(
+                request,
+                "shipments/suppliers.html",  # Adjust this to your actual template path
+                {"suppliers": suppliers, "form": form, "show_modal": True},
+            )
