@@ -11,12 +11,12 @@
     </div>
     <ul class="nav flex-column">
         <li class="nav-item">
-            <a class="nav-link active" href="#">
+            <a class="nav-link active" href="{% url 'home' %}">
                 <i class="fas fa-tachometer-alt"></i> <span>Dashboard</span>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="{% url 'product-list' %}">
                 <i class="fas fa-box"></i> <span>Inventory</span>
             </a>
         </li>
@@ -31,7 +31,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="{% url 'suppliers-list' %}">
                 <i class="fa-solid fa-industry"></i><span>Suppliers</span>
             </a>
         </li>
@@ -56,7 +56,7 @@
             </div>
             <div class="dropdown-item">
                 <i class="fas fa-sign-out-alt"></i>
-               <form action="{% url 'logout' %}" method="POST" style="display:inline;">
+                <form action="{% url 'logout' %}" method="POST" style="display:inline;">
                     {% csrf_token %}
                     <button type="submit" style="background:none; border:none; color: inherit; font: inherit;">
                         Logout
