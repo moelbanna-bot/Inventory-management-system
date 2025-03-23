@@ -101,7 +101,7 @@
                                     </div>
                                 {% endif %}
                             </div>
-                        {% if user.is_superuser %}
+
                             <div class="mb-3">
                                 <label for="confirm_password" class="form-label">Confirm Password</label>
                                 {{ form.password2|add_class:"form-control"|attr:"id:confirm_password"|attr:"placeholder:Confirm your password"|add_error_class:"is-invalid" }}
@@ -111,7 +111,7 @@
                                             {{ error }}
                                         {% endfor %}
                                     </div>
-                                {% endif %}
+
                             </div>
                             {% if user.is_superuser %}
                             <div class="mb-3">
