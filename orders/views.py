@@ -32,8 +32,9 @@ class OrderListView(ListView):
 
             if search_query:
                 query_set = query_set.filter(
-                    Q(name__icontains=search_query)
-                    | Q(description__icontains=search_query)
+                    Q(reference_number__icontains=search_query)
+                    | Q(supermarket__name__icontains=search_query)
+                    | Q(supermarket__email__icontains=search_query)
                 )
 
             return query_set
