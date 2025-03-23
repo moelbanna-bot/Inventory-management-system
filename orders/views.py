@@ -1,7 +1,30 @@
+from django.db.models import Q
 from django.shortcuts import render
+from django.views.generic import ListView
 
-# Create your views here.
+from orders.models import Order
 
 
-def orders_list(request):
-    return render(request, "orders/orders.html")
+class OrderListView(ListView):
+    model = Order
+    template_name = "orders/orders.html"
+    paginate_by = 8
+    context_object_name = "orders"
+    ordering = ["-created_at"]
+    login_url = "login"
+
+    def get_queryset(self):
+        try:
+            query_set = super().get_queryset()
+            search_query = self.request.GET.get("search")
+
+            if search_query:
+                query_set = query_set.filter(
+                    Q(name__icontains=search_query)
+                    | Q(description__icontains=search_query)
+                )
+
+            return query_set
+        except Exception as e:
+            print(f"Error filtering Orders: {e}")
+            return Order.objects.none()
