@@ -15,6 +15,7 @@ Suppliers
 <link href="{% static 'css/supplier.css' %}" rel="stylesheet">
 {% endblock %}
 
+
 <!--main content-->
 {% block content %}
 <div class="container  mt-5 px-5">
@@ -27,13 +28,10 @@ Suppliers
 
     <!--  supplier list-->
     <div class="row">
-        {% for supplier in suppliers %}
+        {% for target in targets %}
         {% include 'components/supplier_supermarket_card.html' %}
         {% endfor %}
 
-
-        <!--        offcanvas-->
-        {% include 'components/offcanvas.html' %}
 
         <!-- ِAdd Supplier Modal -->
         <div class="modal fade" id="addSupplierModal" tabindex="-1" aria-labelledby="addSupplierModalLabel"
@@ -74,5 +72,9 @@ Suppliers
     </div>
 
 </div>
+
+
 {% endblock %}
+
+
 
