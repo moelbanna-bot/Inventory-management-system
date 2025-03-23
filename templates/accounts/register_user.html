@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load widget_tweaks %}
 {% load static %}
 
 {#title #}
@@ -10,7 +11,6 @@
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
     <link rel="stylesheet" href="{% static 'accounts/css/main.css' %}">
-
 {% endblock %}
 
 {#main content#}
@@ -25,22 +25,18 @@
                             {% for message in messages %}
                                 <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
                                     {{ message }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                            aria-label="Close"></button>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                 </div>
                             {% endfor %}
                         {% endif %}
-                        {% if non_field.errors %}
+                        {% if form.non_field_errors %}
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                {% for error in non_field.errors %}
+                                {% for error in form.non_field_errors %}
                                     {{ error }}
                                 {% endfor %}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                        aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                         {% endif %}
-
-
 
                         <form method="post">
                             {% csrf_token %}
@@ -48,22 +44,22 @@
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label for="f_name" class="form-label">First Name</label>
-                                    {{ form.first_name }}
+                                    {{ form.first_name|add_class:"form-control"|attr:"id:f_name"|attr:"placeholder:Enter your first name"|add_error_class:"is-invalid" }}
                                     {% if form.first_name.errors %}
                                         <div class="invalid-feedback">
                                             {% for error in form.first_name.errors %}
-                                                {{ error|striptags }}
+                                                {{ error }}
                                             {% endfor %}
                                         </div>
                                     {% endif %}
                                 </div>
                                 <div class="col-md-6">
                                     <label for="l_name" class="form-label">Last Name</label>
-                                    {{ form.last_name }}
+                                    {{ form.last_name|add_class:"form-control"|attr:"id:l_name"|attr:"placeholder:Enter your last name"|add_error_class:"is-invalid" }}
                                     {% if form.last_name.errors %}
                                         <div class="invalid-feedback">
                                             {% for error in form.last_name.errors %}
-                                                {{ error|striptags }}
+                                                {{ error }}
                                             {% endfor %}
                                         </div>
                                     {% endif %}
@@ -72,11 +68,11 @@
 
                             <div class="mb-3">
                                 <label for="username" class="form-label">Username</label>
-                                {{ form.username }}
+                                {{ form.username|add_class:"form-control"|attr:"id:username"|attr:"placeholder:Enter your username"|add_error_class:"is-invalid" }}
                                 {% if form.username.errors %}
                                     <div class="invalid-feedback">
                                         {% for error in form.username.errors %}
-                                            {{ error|striptags }}
+                                            {{ error }}
                                         {% endfor %}
                                     </div>
                                 {% endif %}
@@ -84,11 +80,11 @@
 
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email</label>
-                                 {{ form.email }}
+                                {{ form.email|add_class:"form-control"|attr:"id:email"|attr:"placeholder:Enter your email"|add_error_class:"is-invalid" }}
                                 {% if form.email.errors %}
                                     <div class="invalid-feedback">
                                         {% for error in form.email.errors %}
-                                            {{ error|striptags }}
+                                            {{ error }}
                                         {% endfor %}
                                     </div>
                                 {% endif %}
@@ -96,11 +92,11 @@
 
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password</label>
-                                {{ form.password1 }}
+                                {{ form.password1|add_class:"form-control"|attr:"id:password"|attr:"placeholder:Enter your password"|add_error_class:"is-invalid" }}
                                 {% if form.password1.errors %}
                                     <div class="invalid-feedback">
                                         {% for error in form.password1.errors %}
-                                            {{ error|striptags }}
+                                            {{ error }}
                                         {% endfor %}
                                     </div>
                                 {% endif %}
@@ -108,32 +104,33 @@
 
                             <div class="mb-3">
                                 <label for="confirm_password" class="form-label">Confirm Password</label>
-                                {{ form.password2 }}
-                                {% if form.confirm_password2.errors %}
+                                {{ form.password2|add_class:"form-control"|attr:"id:confirm_password"|attr:"placeholder:Confirm your password"|add_error_class:"is-invalid" }}
+                                {% if form.password2.errors %}
                                     <div class="invalid-feedback">
-                                        {% for error in form.confirm_password2.errors %}
-                                            {{ error|striptags }}
+                                        {% for error in form.password2.errors %}
+                                            {{ error }}
                                         {% endfor %}
-                            </div>
-                                {% endif %}
+                                    </div>
 
+                            </div>
+                            {% if user.is_superuser %}
                             <div class="mb-3">
                                 <label for="role" class="form-label">Role</label>
-                                 {{ form.role }}
+                                {{ form.role|add_class:"form-select"|attr:"id:role"|attr:"placeholder:Select your role"|add_error_class:"is-invalid" }}
                                 {% if form.role.errors %}
                                     <div class="invalid-feedback">
                                         {% for error in form.role.errors %}
-                                            {{ error|striptags }}
+                                            {{ error }}
                                         {% endfor %}
                                     </div>
                                 {% endif %}
                             </div>
+                                {% endif %}
+                        {% endif %}
 
                             <div class="d-grid mb-3">
                                 <button class="btn btn-primary" type="submit">Register</button>
                             </div>
-
-
                         </form>
                     </div>
                 </div>

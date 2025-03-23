@@ -2,9 +2,10 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.contrib import messages
 from django.db.models import Q
-from django.views.generic import ListView
+from django.views.generic import ListView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Product
+from shipments.models import Shipment, Supplier
 from .forms import ProductForm
 
 
@@ -15,6 +16,7 @@ class ProductListView(LoginRequiredMixin, ListView):
     context_object_name = "products"
     ordering = ["-created_at"]
     login_url = "login"
+
     def get_context_data(self, **kwargs):
         context = super(ProductListView, self).get_context_data(**kwargs)
         context["current_page"] = self.request.GET.get("page", 1)
@@ -103,8 +105,6 @@ class EditProduct(View):
             return redirect("product-list")
 
 
-
-
 class DeleteProduct(View):
     def post(self, request, slug):
         try:
@@ -116,3 +116,24 @@ class DeleteProduct(View):
         except Product.DoesNotExist:
             messages.error(request, "Product not found")
             return redirect("product-list")
+
+
+class DashboardView(LoginRequiredMixin, TemplateView):
+    template_name = "dashboard.html"
+    login_url = "login"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Get top products with current_quantity (not stock)
+        context["products"] = Product.objects.all().order_by("-current_quantity")[:5]
+
+        # Get recent shipments
+        context["recent_shipments"] = Shipment.objects.all().order_by("-created_at")[:5]
+
+        # Get statistics
+        context["total_products"] = Product.objects.count()
+        context["total_shipments"] = Shipment.objects.count()
+        context["total_suppliers"] = Supplier.objects.count()
+
+        return context

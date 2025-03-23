@@ -9,6 +9,28 @@ document.addEventListener("DOMContentLoaded", function () {
         sidebar.classList.toggle("collapsed");
     });
 
+    function setActiveNavLink() {
+        const currentPath = window.location.pathname;
+        const navLinks = document.querySelectorAll('.sidebar .nav-link');
+
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            const href = link.getAttribute('href');
+
+            if (href === '/' && currentPath === '/') {
+                link.classList.add('active');
+            } else if (href !== '/' && currentPath.includes(href) && href !== '#') {
+                link.classList.add('active');
+            } else if (href === '{% url "supplier-list" %}' && currentPath.includes('/shipments/suppliers/')) {
+                link.classList.add('active');
+            }
+        });
+    }
+
+    // Call the function when the page loads
+    setActiveNavLink();
+
+
     const userProfileToggle = document.getElementById("userProfileToggle");
     const accountDropdown = document.getElementById("accountDropdown");
 
