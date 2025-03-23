@@ -1,6 +1,8 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
-from django.shortcuts import render
-from django.views.generic import ListView
+from django.shortcuts import render, redirect
+from django.utils import timezone
+from django.views.generic import ListView, CreateView
 
 from orders.models import Order, Supermarket
 
@@ -35,5 +37,30 @@ class OrderListView(ListView):
             return Order.objects.none()
 
 
-def create_order(request):
-    return render(request, "orders/add-order.html")
+class OrderCreateView(LoginRequiredMixin, CreateView):
+    model = Order
+    template_name = "orders/add-order.html"
+
+    def post(self, request, *args, **kwargs):
+        supermarket_id = request.POST.get("supermarket")
+
+        if supermarket_id:
+            try:
+
+                supermarket = Supermarket.objects.get(id=supermarket_id)
+
+                context = {
+                    "supermarket": supermarket,
+                    "temp_ref_number": "Not assigned yet",
+                    "order_date": timezone.now(),
+                    "status": "Draft",
+                }
+                return render(request, self.template_name, context)
+
+            except Supermarket.DoesNotExist:
+                return redirect("orders-list")
+
+        return redirect("orders-list")
+
+    def get(self, request, *args, **kwargs):
+        return redirect("orders")

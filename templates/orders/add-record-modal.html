@@ -2,7 +2,7 @@
 <!-- Modal -->
 <div class="modal fade" id="addProductRecordModal" tabindex="-1" aria-labelledby="addProductRecordLabel"
      aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" style="min-width: 700px">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-4">
             <div class="modal-header">
                 <h5 class="modal-title fw-bolder" id="addRecordLabel">Add new record</h5>
@@ -10,22 +10,23 @@
             </div>
 
             <!-- Form -->
-            <form method="POST" action="">
+            <form id="add-product-form" method="POST">
                 {% csrf_token %}
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="product" class="form-label">Product *</label>
-                        <!-- all products will be listed here -->
-                        <select class="form-select" id="product" name="product">
-                            <option selected disabled>Select a product</option>
-                            <option value="1">Product 1</option>
-                            <option value="2">Product 2</option>
+                        <select class="form-select" id="product" name="product" required>
+                            <option selected disabled value="">Select a product</option>
+                            {% for product in products %}
+                                <option value="{{ product.id }}">{{ product.name }}</option>
+                            {% endfor %}
                         </select>
                     </div>
 
                     <div class="mb-3">
                         <label for="quantity" class="form-label">Quantity *</label>
-                        <input type="number" class="form-control" id="quantity" name="quantity" required>
+                        <input type="number" class="form-control" id="quantity" name="quantity" min="1" max="1000"
+                               value="1" required>
                     </div>
                 </div>
 
