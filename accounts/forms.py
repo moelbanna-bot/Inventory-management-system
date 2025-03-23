@@ -2,6 +2,9 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
 import re
+from django.contrib.auth.forms import PasswordResetForm
+from django.core.exceptions import ValidationError
+
 
 # Get the User model
 user = get_user_model()
@@ -140,3 +143,13 @@ class UserRegisterForm(UserCreationForm):
         self.fields['role'].widget.attrs.update({
             'id': 'role'
         })
+
+
+User = get_user_model()
+
+class CustomPasswordResetForm(PasswordResetForm):
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if not User.objects.filter(email=email).exists():
+            raise ValidationError("This email address is not registered.")
+        return email
