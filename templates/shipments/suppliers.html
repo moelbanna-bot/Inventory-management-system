@@ -29,12 +29,12 @@ Suppliers
     <!--  supplier list-->
     <div class="row">
         {% for target in suppliers %}
-        {% include 'components/supplier_supermarket_card.html' %}
+        {% include 'components/supplier_supermarket_card.html' with target_url="supplier-detail" %}
         {% endfor %}
 
 
         <!-- ِAdd Supplier Modal -->
-        {% include 'shipments/supplier-from-modal.html' %}
+        {% include 'shipments/supplier-form-modal.html' %}
 
     </div>
 
