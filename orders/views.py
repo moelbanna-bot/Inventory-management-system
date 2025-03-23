@@ -2,7 +2,7 @@ from django.db.models import Q
 from django.shortcuts import render
 from django.views.generic import ListView
 
-from orders.models import Order
+from orders.models import Order, Supermarket
 
 
 class OrderListView(ListView):
@@ -12,6 +12,11 @@ class OrderListView(ListView):
     context_object_name = "orders"
     ordering = ["-created_at"]
     login_url = "login"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["supermarkets"] = Supermarket.objects.all()
+        return context
 
     def get_queryset(self):
         try:
@@ -28,3 +33,7 @@ class OrderListView(ListView):
         except Exception as e:
             print(f"Error filtering Orders: {e}")
             return Order.objects.none()
+
+
+def create_order(request):
+    return render(request, "orders/add-order.html")
