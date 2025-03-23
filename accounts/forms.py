@@ -107,49 +107,10 @@ class UserRegisterForm(UserCreationForm):
             user.save()
         return user
 
-    def __init__(self, *args, **kwargs):
-        # Customize form field attributes during initialization
-        super().__init__(*args, **kwargs)
-        # Add Bootstrap classes to all fields except 'role'
-        for field_name, field in self.fields.items():
-            if field_name != 'role':
-                field.widget.attrs['class'] = 'form-control'
-
-        # Add custom attributes to specific fields
-        self.fields['first_name'].widget.attrs.update({
-            'id': 'f_name',
-            'placeholder': 'Enter first name'
-        })
-        self.fields['last_name'].widget.attrs.update({
-            'id': 'l_name',
-            'placeholder': 'Enter last name'
-        })
-        self.fields['username'].widget.attrs.update({
-            'id': 'username',
-            'placeholder': 'Username will be generated from email',
-        })
-        self.fields['email'].widget.attrs.update({
-            'id': 'email',
-            'placeholder': 'Enter your email'
-        })
-        self.fields['password1'].widget.attrs.update({
-            'id': 'password',
-            'placeholder': 'Create a password'
-        })
-        self.fields['password2'].widget.attrs.update({
-            'id': 'confirm_password',
-            'placeholder': 'Confirm your password'
-        })
-        self.fields['role'].widget.attrs.update({
-            'id': 'role'
-        })
-
-
-User = get_user_model()
 
 class CustomPasswordResetForm(PasswordResetForm):
     def clean_email(self):
         email = self.cleaned_data.get('email')
-        if not User.objects.filter(email=email).exists():
+        if not user.objects.filter(email=email).exists():
             raise ValidationError("This email address is not registered.")
         return email
