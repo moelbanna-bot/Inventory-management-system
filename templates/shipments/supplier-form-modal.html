@@ -16,7 +16,7 @@
             <div class="modal-body">
                 <form method="POST"
                       {% if supplier %}
-                      action="{% url 'edit_supplier' supplier.slug %}"
+                      action="{% url 'supplier-detail' supplier.pk %}"
                       {% else %}
                       action="{% url 'add-supplier' %}"
                       {% endif %}
