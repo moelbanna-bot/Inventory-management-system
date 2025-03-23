@@ -3,40 +3,44 @@
         <div class="card-body">
             <a href="" class="text-decoration-none text-dark">
                 <p class="email card-text fw-bold">
-                    okoko@okok.com
+                    {% if item.supermarket %}
+                        {{ item.supermarket.email }}
+                    {% elif item.supplier %}
+                        {{ item.supplier.email }}
+                    {% endif %}
                 </p>
             </a>
             <div class="mt-3">
                 <span class="text-muted">Status</span>
                 <p class="card-text">
-                    <span class="status badge bg-primary-subtle text-primary">New</span>
+                    <span class="status badge bg-primary-subtle text-primary">{{ item.get_status_display }}</span>
                 </p>
             </div>
 
             <div class="mt-3">
                 <span class="text-muted">Date</span>
                 <p class="card-text text-muted">
-                    <span class="date">3/3/2025, 10:37 PM</span>
+                    <span class="date">{{ item.access_date }}</span>
                 </p>
             </div>
 
             <div class="mt-3">
                 <span class="text-muted">Items count</span>
                 <p class="card-text text-muted">
-                    <span class="items-count">34</span>
+                    <span class="items-count">{{ item.items.count }}</span>
                 </p>
             </div>
             <div class="mt-3">
-                <span class="text-muted">reference number</span>
+                <span class="text-muted">Reference number</span>
                 <p class="card-text text-muted">
-                    <span class="items-count">3232-395773-8768544</span>
+                    <span class="items-count">{{ item.reference_number }}</span>
                 </p>
             </div>
 
-
             <div class="row justify-content-around action mt-3">
-                <a href="" class="btn btn-outline-success btn-sm col-4">edit</a>
-                <a href="" class="btn btn-outline-danger btn-sm  col-4">delete</a>
+                <a href=""
+                   class="btn btn-outline-success btn-sm col-4">edit</a>
+                <a href="" class="btn btn-outline-danger btn-sm col-4">delete</a>
             </div>
         </div>
     </div>

@@ -49,7 +49,7 @@
                     </div>
                 {% else %}
                     {% for order in orders %}
-                        {% include "components/order_shipment_card.html" %}
+                        {% include "components/order_shipment_card.html" with item=order %}
                     {% endfor %}
                 {% endif %}
 
