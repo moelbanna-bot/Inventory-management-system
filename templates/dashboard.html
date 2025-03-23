@@ -3,26 +3,53 @@
 
 {% block content %}
     <div class="container">
-        <div class="col-md-10 main-content">
+        <div class="col main-content">
             <div class="content-area p-4">
-                <h1 class="mb-4">Welcome back!</h1>
+                <h1 class="mb-4">Welcome back, {{ request.user.username }}!</h1>
+
+                <!-- Stats Overview -->
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5>Total Products</h5>
+                                <h2>{{ total_products }}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5>Total Shipments</h5>
+                                <h2>{{ total_shipments }}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5>Total Suppliers</h5>
+                                <h2>{{ total_suppliers }}</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Tabs -->
                 <ul class="nav nav-tabs mb-4">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">Stock</a>
+                        <a class="nav-link active" href="#stock" data-bs-toggle="tab">Stock</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Orders</a>
+                        <a class="nav-link" href="#shipments" data-bs-toggle="tab">Shipments</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Reporting</a>
+                        <a class="nav-link" href="#reporting" data-bs-toggle="tab">Reporting</a>
                     </li>
                 </ul>
 
                 <div class="tab-content">
-                    <div class="tab-pane active">
-                        <div class="stock-label mb-3">Stock</div>
+                    <div class="tab-pane active" id="stock">
                         <h2 class="mb-4">Stock Count</h2>
 
                         <!-- Stock Table -->
@@ -30,76 +57,80 @@
                             <table class="table table-hover">
                                 <thead>
                                 <tr>
-                                    <th>Cover image</th>
+                                    <th>Product image</th>
                                     <th>Product Name</th>
-                                    <th>Genre</th>
-                                    <th>Copies Available</th>
+                                    <th>Current Quantity</th>
+                                    <th>Critical Quantity</th>
                                 </tr>
                                 </thead>
                                 <tbody>
+                                {% for product in products %}
+                                    <tr>
+                                        <td>
+                                            {% if product.image %}
+                                                <img src="{{ product.image.url }}" alt="{{ product.name }}"
+                                                     class="book-cover" style="width: 50px; height: 50px;"/>
+                                            {% else %}
+                                                <img src="https://via.placeholder.com/50" alt="No image"
+                                                     class="book-cover"/>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ product.name }}</td>
+                                        <td>${{ product.current_quantity }}</td>
+                                        <td>{{ product.critical_quantity }}</td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="4" class="text-center">No products available</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+
+                                <!-- Shipments section -->
+                                <tbody>
+
+
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane" id="shipments">
+                        <h2 class="mb-4">Recent Shipments</h2>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
                                 <tr>
-                                    <td>
-                                        <img
-                                                src="https://via.placeholder.com/50"
-                                                alt="Book cover"
-                                                class="book-cover"
-                                        />
-                                    </td>
-                                    <td>Love in the Time of Cholera</td>
-                                    <td>Literary fiction</td>
-                                    <td>1</td>
+                                    <th>Reference</th>
+                                    <th>Supplier</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
                                 </tr>
-                                <tr>
-                                    <td>
-                                        <img
-                                                src="https://via.placeholder.com/50"
-                                                alt="Book cover"
-                                                class="book-cover"
-                                        />
-                                    </td>
-                                    <td>The Name of the Wind</td>
-                                    <td>Fantasy</td>
-                                    <td>5</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <img
-                                                src="https://via.placeholder.com/50"
-                                                alt="Book cover"
-                                                class="book-cover"
-                                        />
-                                    </td>
-                                    <td>The Joy of Cooking</td>
-                                    <td>Cooking</td>
-                                    <td>12</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <img
-                                                src="https://via.placeholder.com/50"
-                                                alt="Book cover"
-                                                class="book-cover"
-                                        />
-                                    </td>
-                                    <td>Gardens of the Moon</td>
-                                    <td>Fantasy</td>
-                                    <td>16</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <img
-                                                src="https://via.placeholder.com/50"
-                                                alt="Book cover"
-                                                class="book-cover"
-                                        />
-                                    </td>
-                                    <td>1984</td>
-                                    <td>Literary fiction</td>
-                                    <td>61</td>
-                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for shipment in recent_shipments %}
+                                    <tr>
+                                        <td>{{ shipment.reference_number }}</td>
+                                        <td>{{ shipment.supplier.name }}</td>
+                                        <td>
+            <span class="badge {% if shipment.status == 'DE' %}bg-success{% elif shipment.status == 'PN' %}bg-warning{% elif shipment.status == 'CA' %}bg-danger{% else %}bg-info{% endif %}">
+                {{ shipment.get_status_display }}
+            </span>
+                                        </td>
+                                        <td>{{ shipment.access_date }}</td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="4" class="text-center">No shipments available</td>
+                                    </tr>
+                                {% endfor %}
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+
+                    <div class="tab-pane" id="reporting">
+                        <h2 class="mb-4">Reporting</h2>
+                        <p>Reporting features will be added soon.</p>
                     </div>
                 </div>
             </div>
