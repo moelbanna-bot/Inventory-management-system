@@ -304,6 +304,7 @@ body {
 .pagination {
     z-index: -1;
 }
+
 .page-link {
     color: #2d6a63;
     background-color: white;
@@ -340,7 +341,7 @@ body {
     font-weight: 500;
     letter-spacing: 0.8px;
     color: white;
-    padding: 5px 20px;
+    padding: 8px 20px;
     border-radius: 10px;
     cursor: pointer;
     transition: background-color 0.2s ease;
@@ -355,7 +356,7 @@ body {
     background-color: #fff;
     font-size: 14px;
     font-weight: 500;
-    padding: 5px 20px;
+    padding: 8px 20px;
     border-radius: 10px;
     cursor: pointer;
     transition: background-color 0.2s ease;
