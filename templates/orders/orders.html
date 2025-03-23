@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+<!--load statics files-->
+{% load static %}
+
+{% block extra_css %}
+
+    <link href="{% static 'css/shipment.css' %}" rel="stylesheet">
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="container px-5 mt-5">
+        <h1 class="text">Orders</h1>
+
+        <!-- Search Bar -->
+        {% include 'components/search-bar.html' with btn_value="Create Order" %}
+
+        <div class="mb-4">
+            <div class="row">
+                <div class="col-12 col-md-6 my-4 mb-md-0">
+                    <h3>Supermarkets</h3>
+                    <ul class="box-button-list">
+                        <li>Booksyfi</li>
+                        <li>Bound & Beyond</li>
+                        <li>LittLinks Books</li>
+                        <li>NovelNest Supply</li>
+                        <li>PageTurner</li>
+                        <li>Macdonald</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-md-6 mb-4 mb-md-0">
+                    <h3>Status</h3>
+                    <ul class="box-button-list">
+                        <li>Draft</li>
+                        <li>Sent</li>
+                        <li>Received</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row">
+                {% if not orders %}
+                    <div class="d-flex flex-column justify-content-center align-items-center p-5">
+                        <i class="fa-solid fa-inbox fa-6x text-secondary"></i>
+                        <p class="text-muted fw-bold mt-3">No purchase orders yet</p>
+                    </div>
+                {% else %}
+                    {% for order in orders %}
+                        {% include "components/order_shipment_card.html" %}
+                    {% endfor %}
+                {% endif %}
+
+
+            </div>
+        </div>
+
+    </div>
+
+
+{% endblock %}
