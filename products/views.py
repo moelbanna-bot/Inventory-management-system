@@ -7,6 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Product
 from shipments.models import Shipment, Supplier
 from .forms import ProductForm
+from accounts.permissions import is_manager
 from django.db.models.functions import TruncMonth
 from datetime import datetime, timedelta
 from django.db.models import Count, Sum, F
@@ -44,8 +45,12 @@ class ProductListView(LoginRequiredMixin, ListView):
 
 
 # Create your views here.
-class AddProduct(View):
+class AddProduct(LoginRequiredMixin, View):
+
     def post(self, request):
+        if not is_manager(request.user):
+            return self.handle_no_permission()
+
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
             product = form.save()
@@ -62,8 +67,10 @@ class AddProduct(View):
             )
 
 
-class EditProduct(View):
+class EditProduct(LoginRequiredMixin, View):
     def get(self, request, slug):
+        if not is_manager(request.user):
+            return self.handle_no_permission()
         try:
             product = Product.objects.get(slug=slug)
             form = ProductForm(instance=product)
@@ -108,7 +115,7 @@ class EditProduct(View):
             return redirect("product-list")
 
 
-class DeleteProduct(View):
+class DeleteProduct(LoginRequiredMixin, View):
     def post(self, request, slug):
         try:
             product = Product.objects.get(slug=slug)
@@ -128,10 +135,13 @@ class DashboardView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        # Get top products with current_quantity (not stock)
         context["products"] = Product.objects.all().order_by("-current_quantity")[:5]
 
+        # Get recent shipments
         context["recent_shipments"] = Shipment.objects.all().order_by("-created_at")[:5]
 
+        # Get statistics
         context["total_products"] = Product.objects.count()
         context["total_shipments"] = Shipment.objects.count()
         context["total_suppliers"] = Supplier.objects.count()

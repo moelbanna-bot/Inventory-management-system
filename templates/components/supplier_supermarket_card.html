@@ -9,30 +9,32 @@
                     </span>
                 </div>
                 <h6 class="card-subtitle mb-3 text-body-secondary "><i
-                        class="fa-regular fa-envelope "></i> {{target.email}}</h6>
+                        class="fa-regular fa-envelope col-1"></i> <span class="col-11">{{target.email}}</span></h6>
                 <h6 class="card-subtitle mb-3 text-body-secondary ">
-                    <i class="fa-solid fa-phone"></i> {{target.phone}}</h6>
+                    <i class="fa-solid fa-phone col-1"></i> <span class="col-11">{{target.phone}}</span></h6>
                 <h6 class="card-subtitle mb-3 text-body-secondary text-truncate">
-                    <i class="fa-solid fa-location-dot"></i>
-                    {{target.address}}
+                    <i class="fa-solid fa-location-dot col-1"></i>
+                    <span class="col-11">{{target.address}}</span>
                 </h6>
-                <div class="d-flex align-items-center mb-3">
-                    <h6 class="card-subtitle text-body-secondary my-0 me-2"><i class="fa-solid fa-truck"></i>
-                        Purchase shipments
-                    </h6>
-                    <span class="badge text-body-secondary rounded-pill" style="background-color: #448886">
+                {% if type == "supplier" %}
+                <h6 class="card-subtitle text-body-secondary me-2 "><i
+                        class="fa-solid fa-truck col-1"></i>
+                    <span class="col-7">Purchase shipments</span>
+                    <span class="badge text-body-secondary rounded-pill " style="background-color: #448886">
                         {{target.total_purchase_shipments}}
                     </span>
+                </h6>
 
-                </div>
-                <div class="d-flex  ">
-                    <h6 class="card-subtitle my-0 text-body-secondary me-2"><i class="fa-solid fa-cart-shopping"></i>
-                        Purchase orders
-                    </h6>
+                {% else %}
+                <h6 class="card-subtitle my-0 text-body-secondary me-2"><i
+                        class="fa-solid fa-cart-shopping col-1"></i>
+                    <span class="col-7">Purchase orders</span>
                     <span class="badge text-body-secondary rounded-pill" style="background-color: #448886">
-        {{target.total_purchase_orders}}
-    </span>
-                </div>
+                            {{target.total_purchase_orders}}
+                        </span>
+                </h6>
+                {% endif %}
+
             </div>
         </a>
     </div>
