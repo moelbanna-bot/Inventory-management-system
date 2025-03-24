@@ -16,9 +16,9 @@
             <div class="modal-body">
                 <form method="POST"
                       {% if supermarket %}
-                      action="{% url 'supermarket-detail' supermarket.pk %}"
+                      action="{% url 'orders:supermarket-detail' supermarket.pk %}"
                       {% else %}
-                      action="{% url 'add-supermarket' %}"
+                      action="{% url 'orders:add-supermarket' %}"
                       {% endif %}
                       class="needs-validation">
                     {% csrf_token %}
