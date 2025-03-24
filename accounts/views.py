@@ -1,5 +1,4 @@
 from email.message import EmailMessage
-
 from django.shortcuts import render, redirect
 from .forms import UserRegisterForm
 from django.contrib import messages
@@ -10,6 +9,9 @@ from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.views import PasswordResetView
 from .forms import CustomPasswordResetForm
+from django.contrib.auth.decorators import user_passes_test
+from .permissions import is_admin, is_manager, is_employee
+
 
 
 
@@ -44,7 +46,7 @@ def send_activate_email(request,user):
 
 
 
-
+@user_passes_test(is_manager, login_url='products_list')
 def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
