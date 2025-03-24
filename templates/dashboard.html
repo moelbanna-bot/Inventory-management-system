@@ -180,7 +180,10 @@
                                         </td>
                                         <td>{{ shipment.access_date }}</td>
                                         <td>
-                                            <button class="btn btn-sm btn-outline-primary">View</button>
+                                            <a href="{% url 'shipment-detail' shipment.reference_number %}"
+                                               class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
                                         </td>
                                     </tr>
                                 {% empty %}

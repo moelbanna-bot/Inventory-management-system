@@ -121,21 +121,6 @@
                 return row;
             }
 
-            addProductBtn.addEventListener('click', function () {
-                const newRow = createProductRow();
-                productRows.appendChild(newRow);
-            });
-
-            productRows.addEventListener('click', function (e) {
-                if (e.target.closest('.remove-product')) {
-                    const row = e.target.closest('.product-row');
-                    if (productRows.children.length > 1) {
-                        row.remove();
-                    }
-                }
-            });
-
-            // Show/hide remove buttons based on number of rows
             function updateRemoveButtons() {
                 const rows = productRows.getElementsByClassName('product-row');
                 const removeButtons = productRows.getElementsByClassName('remove-product');
@@ -146,6 +131,23 @@
 
             // Initial update of remove buttons
             updateRemoveButtons();
+
+            // Update remove buttons when rows are added or removed
+            productRows.addEventListener('click', function (e) {
+                if (e.target.closest('.remove-product')) {
+                    const row = e.target.closest('.product-row');
+                    if (productRows.children.length > 1) {
+                        row.remove();
+                        updateRemoveButtons();
+                    }
+                }
+            });
+
+            addProductBtn.addEventListener('click', function () {
+                const newRow = createProductRow();
+                productRows.appendChild(newRow);
+                updateRemoveButtons();
+            });
 
             // Form validation
             form.addEventListener('submit', function (e) {

@@ -6,6 +6,11 @@
     --warning-color: #f1c40f;
     --light-bg: #f8f9fa;
     --dark-bg: #2c3e50;
+    --chart-primary: #2f6b62;
+    --chart-secondary: #4b917c;
+    --chart-tertiary: #68b7a3;
+    --chart-quaternary: #85d3c9;
+    --chart-grid: #e9ecef;
 }
 
 body {
@@ -210,4 +215,201 @@ body {
 .badge.bg-success-soft {
     background-color: rgba(46, 204, 113, 0.2);
     color: #27ae60;
+}
+
+/* Dashboard Layout */
+.dashboard-container {
+    padding: 1.5rem;
+}
+
+/* Stats Cards */
+.stats-card {
+    background: white;
+    border-radius: 4px;
+    border: 1px solid #e9ecef;
+    padding: 1.25rem;
+    height: 100%;
+}
+
+.stats-card-header {
+    color: #6c757d;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+}
+
+.stats-card-value {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2f6b62; /* Main teal color */
+    margin-bottom: 0.5rem;
+}
+
+.stats-card-trend {
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.trend-up {
+    color: #198754;
+}
+
+.trend-down {
+    color: #dc3545;
+}
+
+/* Charts Section */
+.chart-container {
+    background: white;
+    border-radius: 4px;
+    border: 1px solid #e9ecef;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.chart-title {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #333;
+}
+
+/* Recent Activity */
+.activity-card {
+    background: white;
+    border-radius: 4px;
+    border: 1px solid #e9ecef;
+    padding: 1.25rem;
+}
+
+.activity-header {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.activity-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 0.75rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    background-color: #e8f5e9;
+    color: #2f6b62;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.75rem;
+}
+
+.activity-content {
+    flex: 1;
+}
+
+.activity-title {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 0.25rem;
+}
+
+.activity-time {
+    font-size: 0.75rem;
+    color: #6c757d;
+}
+
+/* Table Styles */
+.dashboard-table {
+    width: 100%;
+    background: white;
+    border-radius: 4px;
+    border: 1px solid #e9ecef;
+}
+
+.dashboard-table th {
+    background-color: #f8f9fa;
+    font-weight: 500;
+    color: #6c757d;
+    padding: 0.75rem 1rem;
+}
+
+.dashboard-table td {
+    padding: 0.75rem 1rem;
+    vertical-align: middle;
+}
+
+/* Status Indicators */
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 0.5rem;
+}
+
+.status-active {
+    background-color: #2f6b62;
+}
+
+.status-inactive {
+    background-color: #dc3545;
+}
+
+/* Action Buttons */
+.btn-dashboard {
+    background-color: #2f6b62;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.btn-dashboard:hover {
+    background-color: #265950;
+    color: white;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 1rem;
+    }
+
+    .stats-card {
+        margin-bottom: 1rem;
+    }
+
+    .chart-container {
+        padding: 1rem;
+    }
+
+    .activity-card {
+        margin-top: 1rem;
+    }
 }

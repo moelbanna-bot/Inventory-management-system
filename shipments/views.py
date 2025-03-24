@@ -209,7 +209,7 @@ class ShipmentListView(LoginRequiredMixin, ListView):
     context_object_name = "shipments"
     ordering = ["-created_at"]
     login_url = "login"
-    paginate_by = 10
+    paginate_by = 6
 
     def get_queryset(self):
         queryset = super().get_queryset()
