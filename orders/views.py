@@ -101,7 +101,7 @@ class PlaceOrderView(View):
             return redirect("orders:orders-list")
         order.save()
         messages.success(request, "Order placed successfully.")
-        return redirect("orders:orders-list")
+        return redirect("orders:order_details")
 
 
 @require_POST
@@ -145,3 +145,16 @@ class EditOrderItemView(View):
         return HttpResponseRedirect(
             reverse("orders:add_order", kwargs={"pk": order_item.order.id})
         )
+
+
+class OrderDetailView(LoginRequiredMixin, TemplateView):
+    template_name = "orders/add-order.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        order = get_object_or_404(
+            Order, reference_number=self.kwargs["reference_number"]
+        )
+        context["order"] = order
+        context["order_items"] = order.items.all()
+        return context

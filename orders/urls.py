@@ -7,6 +7,7 @@ from .views import (
     cancel_order,
     delete_order_item,
     EditOrderItemView,
+    OrderDetailView,
 )
 
 app_name = "orders"
@@ -23,5 +24,10 @@ urlpatterns = [
     ),
     path(
         "edit-order-item/<int:pk>/", EditOrderItemView.as_view(), name="edit_order_item"
+    ),
+    path(
+        "order-detail/<str:reference_number>/",
+        OrderDetailView.as_view(),
+        name="order_details",
     ),
 ]
