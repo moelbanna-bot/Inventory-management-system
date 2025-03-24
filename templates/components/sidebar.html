@@ -21,7 +21,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{% url 'shipment-list' %}">
+            <a class="nav-link" href="#">
                 <i class="fas fa-truck"></i> <span>Shipments</span>
             </a>
         </li>
@@ -40,6 +40,14 @@
                 <i class="fa-solid fa-store"></i><span>SuperMarkets</span>
             </a>
         </li>
+        {% if user.is_authenticated and user.is_staff %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'register' %}">
+                    <i class="fa-solid fa-user"></i><span>Add Employee</span>
+                </a>
+            </li>
+        {% endif %}
+
     </ul>
     <div class="user-profile mt-auto">
         <div class="d-flex align-items-center p-2 gap-3" id="userProfileToggle">
