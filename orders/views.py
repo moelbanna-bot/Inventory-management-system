@@ -1,17 +1,11 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
-from django.utils import timezone
-from django.views.decorators.http import require_POST
-from django.views.generic import ListView, View, TemplateView
-from django.views.generic import ListView, CreateView, View, DetailView
-from django.http import JsonResponse
-from django.urls import reverse
+from django.views.generic import ListView, DetailView, TemplateView
 from django.contrib import messages
 from django.views import View
 from django.db.models import Count
-from .forms import SupermarketForm
-from .models import Supermarket, Order
+from .forms import SupermarketForm, OrderForm
 from django.db.models import Sum
 from orders.models import Order, Supermarket, OrderItem
 from products.models import Product
@@ -47,6 +41,55 @@ class OrdersListView(LoginRequiredMixin, ListView):
         context["current_page"] = self.request.GET.get("page", 1)
         context["status_choices"] = Order.STATUS_ORDER_CHOICES
         return context
+
+
+class CreateOrderView(LoginRequiredMixin, TemplateView):
+    template_name = "orders/create_order.html"
+    login_url = "login"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["supermarkets"] = Supermarket.objects.filter(is_active=True)
+        context["products"] = Product.objects.all()
+        context["form"] = OrderForm()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        try:
+            data = request.POST
+            supermarket_id = data.get("supermarket")
+            products = data.getlist("product[]")
+            quantities = data.getlist("quantity[]")
+            access_date = data.get("access_date")
+
+            if not supermarket_id or not products or not quantities or not access_date:
+                messages.error(request, "Please provide all required information")
+                return redirect("orders:create-order")
+
+            supermarket = Supermarket.objects.get(id=supermarket_id)
+
+            # Create order with generated reference number
+            order = Order.objects.create(
+                supermarket=supermarket,
+                status="PN",
+                created_by=request.user,
+                access_date=access_date,
+            )
+
+            for product_id, quantity in zip(products, quantities):
+                product = Product.objects.get(id=product_id)
+                OrderItem.objects.create(
+                    order=order, product=product, quantity=quantity
+                )
+
+            messages.success(
+                request, f"Order #{order.reference_number} created successfully!"
+            )
+            return redirect("orders:orders-list")
+
+        except Exception as e:
+            messages.error(request, f"Error creating order: {str(e)}")
+            return redirect("orders:create-order")
 
 
 # supermarket views
