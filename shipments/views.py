@@ -1,12 +1,13 @@
 from django.shortcuts import redirect, render
 from django.views import View
 from django.views.generic import ListView, DetailView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Q, Count
 from django.contrib import messages
 from .forms import SupplierForm
 from .models import Supplier, Shipment
 from django.db.models import Sum
+from accounts.permissions import is_manager
 
 
 class SupplierListView(LoginRequiredMixin, ListView):
@@ -46,7 +47,7 @@ class SupplierListView(LoginRequiredMixin, ListView):
             return Supplier.objects.none()
 
 
-class AddSupplierView(View):
+class AddSupplierView(LoginRequiredMixin, View):
     def post(self, request):
         form = SupplierForm(request.POST)
         if form.is_valid():
@@ -119,6 +120,9 @@ class SupplierDetailView(LoginRequiredMixin, DetailView):
         return context
 
     def post(self, request, *args, **kwargs):
+
+        if not is_manager(request.user):
+            return self.handle_no_permission()
         self.object = self.get_object()
         supplier = self.object
 
