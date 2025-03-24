@@ -128,35 +128,27 @@ class DashboardView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # Get top products with current_quantity (not stock)
         context["products"] = Product.objects.all().order_by("-current_quantity")[:5]
 
-        # Get recent shipments
         context["recent_shipments"] = Shipment.objects.all().order_by("-created_at")[:5]
 
-        # Get statistics
         context["total_products"] = Product.objects.count()
         context["total_shipments"] = Shipment.objects.count()
         context["total_suppliers"] = Supplier.objects.count()
 
-        # Check if user is a manager
-        is_manager = self.request.user.groups.filter(name="Manager").exists()
-        context["is_manager"] = is_manager
+        context["is_manager"] = self.request.user.is_staff
 
-        # Get low stock count only for managers
-        if is_manager:
+        if self.request.user.is_staff:
             context["low_stock_count"] = Product.objects.filter(
                 current_quantity__lte=F("critical_quantity")
             ).count()
 
-        # Get last 6 months for inventory trends
         last_6_months = []
         for i in range(5, -1, -1):
             date = datetime.now() - timedelta(days=30 * i)
             last_6_months.append(date.strftime("%b"))
         context["inventory_trends_labels"] = last_6_months
 
-        # Get total inventory for each month (you might want to adjust this based on your actual data model)
         inventory_data = []
         for i in range(5, -1, -1):
             date = datetime.now() - timedelta(days=30 * i)
@@ -169,7 +161,6 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             inventory_data.append(total)
         context["inventory_trends_data"] = inventory_data
 
-        # Get shipment status distribution
         shipment_status = (
             Shipment.objects.values("status")
             .annotate(count=Count("id"))
@@ -185,7 +176,6 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         context["shipment_status_labels"] = status_labels
         context["shipment_status_data"] = status_data
 
-        # Get monthly shipments data
         monthly_shipments = (
             Shipment.objects.annotate(month=TruncMonth("created_at"))
             .values("month")
@@ -202,7 +192,6 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         context["monthly_shipments_labels"] = monthly_labels
         context["monthly_shipments_data"] = monthly_data
 
-        # Get top products data
         top_products = Product.objects.order_by("-current_quantity")[:5]
         top_products_labels = []
         top_products_data = []
@@ -214,3 +203,22 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         context["top_products_data"] = top_products_data
 
         return context
+
+
+class LowStockProductsView(LoginRequiredMixin, ListView):
+    model = Product
+    template_name = "products/low_stock_products.html"
+    context_object_name = "products"
+    paginate_by = 8
+    login_url = "login"
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_staff:
+            messages.error(request, "You don't have permission to access this page.")
+            return redirect('dashboard')
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return Product.objects.filter(
+            current_quantity__lte=F('critical_quantity')
+        ).order_by('current_quantity')
