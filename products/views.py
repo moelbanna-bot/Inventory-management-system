@@ -8,6 +8,9 @@ from .models import Product
 from shipments.models import Shipment, Supplier
 from .forms import ProductForm
 from accounts.permissions import is_manager
+from django.db.models.functions import TruncMonth
+from datetime import datetime, timedelta
+from django.db.models import Count, Sum, F
 
 
 class ProductListView(LoginRequiredMixin, ListView):
@@ -143,4 +146,89 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         context["total_shipments"] = Shipment.objects.count()
         context["total_suppliers"] = Supplier.objects.count()
 
+        context["is_manager"] = self.request.user.is_staff
+
+        if self.request.user.is_staff:
+            context["low_stock_count"] = Product.objects.filter(
+                current_quantity__lte=F("critical_quantity")
+            ).count()
+
+        last_6_months = []
+        for i in range(5, -1, -1):
+            date = datetime.now() - timedelta(days=30 * i)
+            last_6_months.append(date.strftime("%b"))
+        context["inventory_trends_labels"] = last_6_months
+
+        inventory_data = []
+        for i in range(5, -1, -1):
+            date = datetime.now() - timedelta(days=30 * i)
+            total = (
+                Product.objects.filter(created_at__lte=date).aggregate(
+                    total=Sum("current_quantity")
+                )["total"]
+                or 0
+            )
+            inventory_data.append(total)
+        context["inventory_trends_data"] = inventory_data
+
+        shipment_status = (
+            Shipment.objects.values("status")
+            .annotate(count=Count("id"))
+            .order_by("status")
+        )
+
+        status_labels = []
+        status_data = []
+        for status in shipment_status:
+            status_labels.append(status["status"])
+            status_data.append(status["count"])
+
+        context["shipment_status_labels"] = status_labels
+        context["shipment_status_data"] = status_data
+
+        monthly_shipments = (
+            Shipment.objects.annotate(month=TruncMonth("created_at"))
+            .values("month")
+            .annotate(count=Count("id"))
+            .order_by("month")[:6]
+        )
+
+        monthly_labels = []
+        monthly_data = []
+        for shipment in monthly_shipments:
+            monthly_labels.append(shipment["month"].strftime("%b"))
+            monthly_data.append(shipment["count"])
+
+        context["monthly_shipments_labels"] = monthly_labels
+        context["monthly_shipments_data"] = monthly_data
+
+        top_products = Product.objects.order_by("-current_quantity")[:5]
+        top_products_labels = []
+        top_products_data = []
+        for product in top_products:
+            top_products_labels.append(product.name)
+            top_products_data.append(product.current_quantity)
+
+        context["top_products_labels"] = top_products_labels
+        context["top_products_data"] = top_products_data
+
         return context
+
+
+class LowStockProductsView(LoginRequiredMixin, ListView):
+    model = Product
+    template_name = "products/low_stock_products.html"
+    context_object_name = "products"
+    paginate_by = 8
+    login_url = "login"
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_staff:
+            messages.error(request, "You don't have permission to access this page.")
+            return redirect('dashboard')
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return Product.objects.filter(
+            current_quantity__lte=F('critical_quantity')
+        ).order_by('current_quantity')

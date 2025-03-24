@@ -16,12 +16,15 @@ document.addEventListener("DOMContentLoaded", function () {
         navLinks.forEach(link => {
             link.classList.remove('active');
             const href = link.getAttribute('href');
-
             if (href === '/' && currentPath === '/') {
                 link.classList.add('active');
-            } else if (href !== '/' && currentPath.includes(href) && href !== '#') {
+            } else if (href === '/shipments/' && (currentPath === '/shipments/' || /^\/shipments\/(?!suppliers)/.test(currentPath))) {
                 link.classList.add('active');
-            } else if (href === '{% url "supplier-list" %}' && currentPath.includes('/shipments/suppliers/')) {
+            } else if (currentPath.includes('/shipments/suppliers/')) {
+                if (href.includes('/shipments/suppliers/')) {
+                    link.classList.add('active');
+                }
+            } else if (href !== '/' && href !== '#' && (currentPath === href || currentPath === `${href}/`)) {
                 link.classList.add('active');
             }
         });
