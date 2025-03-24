@@ -62,21 +62,15 @@
             </div>
             <i class="fas fa-chevron-down ms-auto"></i>
         </div>
-        <div class="account-dropdown" id="accountDropdown">
-            <div class="dropdown-item">
-                <i class="fas fa-cog"></i>
-                <span>Account Settings</span>
+        <form action="{% url 'logout' %}" method="POST" style="display:inline;">
+            {% csrf_token %}
+            <div class="account-dropdown" id="accountDropdown">
+                <button type="submit" class="dropdown-item logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
             </div>
-            <div class="dropdown-item">
-                <i class="fas fa-sign-out-alt"></i>
-                <form action="{% url 'logout' %}" method="POST" style="display:inline;">
-                    {% csrf_token %}
-                    <button type="submit" style="background:none; border:none; color: inherit; font: inherit;">
-                        Logout
-                    </button>
-                </form>
-            </div>
-        </div>
+        </form>
     </div>
 </div>
 <script src="{% static 'js/main.js' %}"></script>

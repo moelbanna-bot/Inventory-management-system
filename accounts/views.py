@@ -1,4 +1,3 @@
-from email.message import EmailMessage
 from django.shortcuts import render, redirect
 from .forms import UserRegisterForm
 from django.contrib import messages
@@ -9,8 +8,7 @@ from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.views import PasswordResetView, LoginView
 from .forms import CustomPasswordResetForm
-from django.contrib.auth.decorators import user_passes_test
-from .permissions import is_manager, is_employee
+from .permissions import is_manager
 
 
 def send_activate_email(request, user):
