@@ -5,113 +5,116 @@
 
 <!--title-->
 {% block title %}
-supplier.name
+    supplier.name
 {% endblock %}
 
 
 <!--loading css file-->
 {% block extra_css %}
-<link href="{% static 'css/supplier_details.css' %}" rel="stylesheet">
+    <link href="{% static 'css/supplier_details.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
-<div class="container  mt-5 px-5">
+    <div class="container  mt-5 px-5">
+
 
     <div class="row mb-3">
         <div class="col-12">
             <a href="{% url 'orders:supermarkets-list' %}" class="btn btn-secondary">
                 <i class="fa-solid fa-arrow-left"></i> Back to Supermarkets
             </a>
+
         </div>
-    </div>
-    <!--  supplier list-->
-    <div class="row">
+        <!--  supplier list-->
+        <div class="row">
 
-        <!--                supplier main info section-->
-        <section class="mb-5 d-flex flex-column justify-content-between gap-5">
-            <h2 class="text-capitalize fw-bold ">{{supermarket.name}}</h2>
-            <div>
-                <div class="d-flex border-bottom p-3">
-                    <span class="fw-bold col-4 supplier_info">Supermarket email</span>
-                    <p class="mb-0 col-8"><a class="email"
-                                             href="mailt0:{{supermarket.email}}">{{supermarket.email}}</a>
-                    </p>
-                </div>
-                <div class="d-flex border-bottom p-3">
-                    <span class="fw-bold col-4 supplier_info">Supermarket phone</span>
-                    <p class="mb-0 col-8">{{supermarket.phone}}
-                    </p>
-                </div>
-                <div class="d-flex border-bottom p-3">
-                    <span class="fw-bold col-4 supplier_info">Supermarket address</span>
-                    <p class="mb-0 col-8">{{supermarket.address}}</p>
-                </div>
-                <div class="d-flex border-bottom p-3">
-                    <span class="fw-bold col-4 supplier_info">Started at</span>
-                    <p class="mb-0 col-8">{{supermarket.created_at}}</p>
-                </div>
-                <div class="d-flex border-bottom p-3">
-                    <span class="fw-bold col-4 supplier_info">Updated at</span>
-                    <p class="mb-0 col-8">{{supermarket.updated_at}}</p>
-                </div>
-                {% if type == 'supermarket' %}
-
-                <div class="d-flex p-3">
-                    <span class="fw-bold col-4 supplier_info">Purchase orders</span>
-                    <p class="mb-0 col-8">{{supermarket.total_purchase_orders}}</p>
-                </div>
-                {% else %}
-                <div class="d-flex p-3">
-                    <span class="fw-bold col-4 supplier_info">Purchase orders</span>
-                    <p class="mb-0 col-8">{{supermarket.total_purchase_orders}}</p>
-                </div>
-                {% endif %}
-            </div>
-            <div>
-                <button type="button" class="button-primary" data-bs-toggle="modal"
-                        data-bs-target="#SupermarketModal">
-                    Update details
-                </button>
-                <button type="button"
-                        class="btn custom {% if supermarket.is_active %}btn-success{% else %}btn-danger{% endif %}"
-                        data-bs-toggle="modal" data-bs-target="#toggleStatusModal">
-                    {% if supermarket.is_active %}
-                    Active
-                    {% else %}
-                    Inactive
-                    {% endif %}
-                </button>
-
-            </div>
-
-        </section>
-        <section class="d-flex flex-column justify-content-between gap-3">
-            <h2 class="fw-bold">Purchase order history</h2>
-            <div class="data-container mb-5 border rounded">
-
-                <!-- Header Row -->
-                <div class="header bg-light">
-                    <div class="col">Purchase Order ID</div>
-                    <div class="col">Order Due Date</div>
-                    <div class="col">Status</div>
-                    <div class="col">Item Count</div>
-                </div>
-
-                <div class="data-wrapper">
-                    <!-- In case of no data yet -->
-                    {% if not purchase_orders %}
-                    <div class="d-flex flex-column justify-content-center align-items-center p-5">
-                        <i class="fa-solid fa-inbox fs-4"></i>
-                        <p class="text-muted mt-3">No purchase shipments yet</p>
+            <!--                supplier main info section-->
+            <section class="mb-5 d-flex flex-column justify-content-between gap-5">
+                <h2 class="text-capitalize fw-bold ">{{ supermarket.name }}</h2>
+                <div>
+                    <div class="d-flex border-bottom p-3">
+                        <span class="fw-bold col-4 supplier_info">Supermarket email</span>
+                        <p class="mb-0 col-8"><a class="email"
+                                                 href="mailt0:{{ supermarket.email }}">{{ supermarket.email }}</a>
+                        </p>
                     </div>
+                    <div class="d-flex border-bottom p-3">
+                        <span class="fw-bold col-4 supplier_info">Supermarket phone</span>
+                        <p class="mb-0 col-8">{{ supermarket.phone }}
+                        </p>
+                    </div>
+                    <div class="d-flex border-bottom p-3">
+                        <span class="fw-bold col-4 supplier_info">Supermarket address</span>
+                        <p class="mb-0 col-8">{{ supermarket.address }}</p>
+                    </div>
+                    <div class="d-flex border-bottom p-3">
+                        <span class="fw-bold col-4 supplier_info">Started at</span>
+                        <p class="mb-0 col-8">{{ supermarket.created_at }}</p>
+                    </div>
+                    <div class="d-flex border-bottom p-3">
+                        <span class="fw-bold col-4 supplier_info">Updated at</span>
+                        <p class="mb-0 col-8">{{ supermarket.updated_at }}</p>
+                    </div>
+                    {% if type == 'supermarket' %}
+
+                        <div class="d-flex p-3">
+                            <span class="fw-bold col-4 supplier_info">Purchase orders</span>
+                            <p class="mb-0 col-8">{{ supermarket.total_purchase_orders }}</p>
+                        </div>
                     {% else %}
-                    <!-- Data Rows -->
-                    <div class="raw-data">
-                        {% for order in purchase_orders %}
-                        <div class="row-data">
-                            <div class="col">{{ order.id }}</div>
-                            <div class="col">{{ order.due_date }}</div>
-                            <div class="col">
+                        <div class="d-flex p-3">
+                            <span class="fw-bold col-4 supplier_info">Purchase orders</span>
+                            <p class="mb-0 col-8">{{ supermarket.total_purchase_orders }}</p>
+                        </div>
+                    {% endif %}
+                </div>
+                {% if user.is_authenticated and user.is_staff %}
+                    <div>
+                        <button type="button" class="button-primary" data-bs-toggle="modal"
+                                data-bs-target="#SupermarketModal">
+                            Update details
+                        </button>
+                        <button type="button"
+                                class="btn custom {% if supermarket.is_active %}btn-success{% else %}btn-danger{% endif %}"
+                                data-bs-toggle="modal" data-bs-target="#toggleStatusModal">
+                            {% if supermarket.is_active %}
+                                Active
+                            {% else %}
+                                Inactive
+                            {% endif %}
+                        </button>
+
+                    </div>
+                {% endif %}
+
+            </section>
+            <section class="d-flex flex-column justify-content-between gap-3">
+                <h2 class="fw-bold">Purchase order history</h2>
+                <div class="data-container mb-5 border rounded">
+
+                    <!-- Header Row -->
+                    <div class="header bg-light">
+                        <div class="col">Purchase Order ID</div>
+                        <div class="col">Order Due Date</div>
+                        <div class="col">Status</div>
+                        <div class="col">Item Count</div>
+                    </div>
+
+                    <div class="data-wrapper">
+                        <!-- In case of no data yet -->
+                        {% if not purchase_orders %}
+                            <div class="d-flex flex-column justify-content-center align-items-center p-5">
+                                <i class="fa-solid fa-inbox fs-4"></i>
+                                <p class="text-muted mt-3">No purchase shipments yet</p>
+                            </div>
+                        {% else %}
+                            <!-- Data Rows -->
+                            <div class="raw-data">
+                                {% for order in purchase_orders %}
+                                    <div class="row-data">
+                                        <div class="col">{{ order.id }}</div>
+                                        <div class="col">{{ order.due_date }}</div>
+                                        <div class="col">
                                     <span class="badge
                                         {% if order.status == 'Received' %}bg-success
                                         {% elif order.status == 'Pending' %}bg-warning
@@ -120,67 +123,69 @@ supplier.name
                                         {% endif %}">
                                         {{ order.status }}
                                     </span>
+                                        </div>
+                                        <div class="col">{{ order.item_count }}</div>
+                                    </div>
+                                {% endfor %}
                             </div>
-                            <div class="col">{{ order.item_count }}</div>
-                        </div>
-                        {% endfor %}
+                        {% endif %}
                     </div>
-                    {% endif %}
                 </div>
-            </div>
-        </section>
+            </section>
+        </div>
+
+
     </div>
 
-
-</div>
-
-<!-- Update Supplier Modal -->
-{% include 'orders/supermarket-form-modal.html' %}
-<!-- Toggle Status Modal -->
-<div class="modal fade" id="toggleStatusModal" tabindex="-1" aria-labelledby="toggleStatusModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="toggleStatusModalLabel">
-                    {% if supermarket.is_active %}
-                    Deactivate Supermarket
-                    {% else %}
-                    Activate Supermarket
-                    {% endif %}
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>
-                    {% if supermarket.is_active %}
-                    Are you sure you want to deactivate "{{ supermarket.name }}"? This supermarket will no longer appear in
-                    active supermarket lists.
-                    {% else %}
-                    Are you sure you want to activate "{{ supermarket.name }}"? This supermarket will appear in active
-                    supermarket lists.
-                    {% endif %}
-                </p>
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <form method="post" action="">
-                    {% csrf_token %}
-                    <!-- This is the hidden field -->
-                    <input type="hidden" name="toggle_status" value="1">
-                    <button type="submit"
-                            class="btn {% if supermarket.is_active %}btn-warning{% else %}btn-success{% endif %}">
+    <!-- Update Supplier Modal -->
+    {% include 'orders/supermarket-form-modal.html' %}
+    <!-- Toggle Status Modal -->
+    <div class="modal fade" id="toggleStatusModal" tabindex="-1" aria-labelledby="toggleStatusModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="toggleStatusModalLabel">
                         {% if supermarket.is_active %}
-                        Deactivate
+                            Deactivate Supermarket
                         {% else %}
-                        Activate
+                            Activate Supermarket
                         {% endif %}
-                    </button>
-                </form>
-            </div>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        {% if supermarket.is_active %}
+                            Are you sure you want to deactivate "{{ supermarket.name }}"? This supermarket will no
+                            longer appear in
+                            active supermarket lists.
+                        {% else %}
+                            Are you sure you want to activate "{{ supermarket.name }}"? This supermarket will appear in
+                            active
+                            supermarket lists.
+                        {% endif %}
+                    </p>
+                </div>
 
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form method="post" action="">
+                        {% csrf_token %}
+                        <!-- This is the hidden field -->
+                        <input type="hidden" name="toggle_status" value="1">
+                        <button type="submit"
+                                class="btn {% if supermarket.is_active %}btn-warning{% else %}btn-success{% endif %}">
+                            {% if supermarket.is_active %}
+                                Deactivate
+                            {% else %}
+                                Activate
+                            {% endif %}
+                        </button>
+                    </form>
+                </div>
+
+            </div>
         </div>
     </div>
-</div>
 {% endblock %}

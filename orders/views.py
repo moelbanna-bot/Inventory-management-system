@@ -197,7 +197,7 @@ class SupermarketListView(LoginRequiredMixin, ListView):
             return Supermarket.objects.none()
 
 
-class AddSupermarketView(View):
+class AddSupermarketView(LoginRequiredMixin, View):
     def post(self, request):
         form = SupermarketForm(request.POST)
         if form.is_valid():
@@ -208,6 +208,10 @@ class AddSupermarketView(View):
             return redirect(
                 "orders:supermarkets-list"
             )  # Adjust this to your actual URL name
+
+            messages.success(request, f"Supermarket '{supermarket.name}' added successfully!")
+            return redirect("orders:supermarkets-list")  # Adjust this to your actual URL name
+
         else:
             # Add show_modal flag to indicate we need to reopen the modal
             supermarkets = Supermarket.objects.all()
