@@ -101,7 +101,7 @@ class PlaceOrderView(View):
             return redirect("orders:orders-list")
         order.save()
         messages.success(request, "Order placed successfully.")
-        return redirect("orders:order_details")
+        return redirect("orders:order_details", pk=order.id)
 
 
 @require_POST
