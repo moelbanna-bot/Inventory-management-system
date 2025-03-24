@@ -111,9 +111,10 @@
                                             {{ error }}
                                         {% endfor %}
                                     </div>
-
+                                {% endif %}
                             </div>
-                            {% if user.is_superuser %}
+
+                            {% if user and user.is_superuser %}
                             <div class="mb-3">
                                 <label for="role" class="form-label">Role</label>
                                 {{ form.role|add_class:"form-select"|attr:"id:role"|attr:"placeholder:Select your role"|add_error_class:"is-invalid" }}
@@ -125,8 +126,7 @@
                                     </div>
                                 {% endif %}
                             </div>
-                                {% endif %}
-                        {% endif %}
+                            {% endif %}
 
                             <div class="d-grid mb-3">
                                 <button class="btn btn-primary" type="submit">Register</button>
