@@ -1,12 +1,12 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
-from django.views.generic import ListView, CreateView, View
-from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.views.generic import ListView, View, TemplateView
 from django.urls import reverse
 from django.contrib import messages
-import json
 
 from orders.models import Order, Supermarket, OrderItem
 from products.models import Product
@@ -43,78 +43,105 @@ class OrderListView(ListView):
             return Order.objects.none()
 
 
-class OrderCreateView(LoginRequiredMixin, CreateView):
-    model = Order
+class CreateOrderView(View):
+    def post(self, request, *args, **kwargs):
+        supermarket_id = request.POST.get("supermarket_id")
+        if not supermarket_id:
+            messages.error(request, "Please select a supermarket.")
+            return redirect("orders:orders-list")
+
+        supermarket = Supermarket.objects.get(id=supermarket_id)
+        with transaction.atomic():
+            order = Order.objects.create(
+                supermarket=supermarket,
+                created_by=request.user,
+                access_date=timezone.now(),
+            )
+            request.session["order_id"] = order.id
+            return redirect(reverse("orders:add_order", kwargs={"pk": order.id}))
+
+
+class AddOrderView(TemplateView):
     template_name = "orders/add-order.html"
 
-    def get(self, request, *args, **kwargs):
-        # Redirect to orders list if accessed directly without POST
-        return redirect("orders-list")
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        order = get_object_or_404(Order, id=self.kwargs["pk"])
+        context["order"] = order
+        context["order_items"] = order.items.all()
+        context["products"] = Product.objects.all()
+        return context
 
     def post(self, request, *args, **kwargs):
-        # Check if this is a form submission to create an order
-        if "submit_order" in request.POST:
-            try:
-                # Get data from form
-                supermarket_id = request.POST.get("supermarket_id")
-                products_json = request.POST.get("products_json")
+        order = get_object_or_404(Order, id=self.kwargs["pk"])
+        product_id = request.POST.get("product")
+        quantity = request.POST.get("quantity")
 
-                if not products_json or not supermarket_id:
-                    messages.error(request, "Missing required data")
-                    return redirect("orders-list")
+        if product_id and quantity:
+            product = get_object_or_404(Product, id=product_id)
+            OrderItem.objects.create(order=order, product=product, quantity=quantity)
+            messages.success(request, "Product added successfully.")
+        else:
+            messages.error(request, "Please select a product and quantity.")
 
-                # Parse products JSON
-                products_data = json.loads(products_json)
-                print("****products_data*****", products_data)
+        return redirect(reverse("orders:add_order", kwargs={"pk": order.id}))
 
-                if not products_data:
-                    messages.error(request, "No products selected")
-                    return redirect("orders-list")
 
-                # Create the order
-                supermarket = Supermarket.objects.get(id=supermarket_id)
-                order = Order.objects.create(
-                    supermarket=supermarket,
-                    access_date=timezone.now().date(),
-                    created_by=request.user,
-                )
+class PlaceOrderView(View):
+    def post(self, request, *args, **kwargs):
+        order_id = request.session.get("order_id")
+        if not order_id:
+            messages.error(request, "No order found.")
+            return redirect("orders:orders-list")
 
-                # Create order items
-                for product_data in products_data:
-                    OrderItem.objects.create(
-                        order=order,
-                        product_id=product_data["productId"],
-                        quantity=product_data["quantity"],
-                    )
+        order = get_object_or_404(Order, id=order_id)
+        if order.items.count() == 0:
+            order.delete()
+            messages.error(request, "Order cancelled as no items were added.")
+            return redirect("orders:orders-list")
+        order.save()
+        messages.success(request, "Order placed successfully.")
+        return redirect("orders:orders-list")
 
-                messages.success(
-                    request, f"Order #{order.reference_number} created successfully"
-                )
-                return redirect("orders-list")
 
-            except Exception as e:
-                print(f"Error creating order: {e}")
-                messages.error(request, f"Failed to create order: {e}")
-                return redirect("orders-list")
+@require_POST
+def cancel_order(request):
+    order_id = request.session.get("order_id")
+    if not order_id:
+        messages.error(request, "No order found.")
+        return redirect("orders:orders-list")
 
-        # If this is initial supermarket selection to show order form
-        supermarket_id = request.POST.get("supermarket")
-        if supermarket_id:
-            try:
-                supermarket = Supermarket.objects.get(id=supermarket_id)
-                products = Product.objects.all()
+    order = get_object_or_404(Order, id=order_id)
+    order.delete()
+    messages.success(request, "Order cancelled successfully.")
+    return redirect("orders:orders-list")
 
-                context = {
-                    "supermarket": supermarket,
-                    "temp_ref_number": "Not assigned yet",
-                    "order_date": timezone.now(),
-                    "status": "New",
-                    "products": products,
-                }
-                return render(request, self.template_name, context)
 
-            except Supermarket.DoesNotExist:
-                messages.error(request, "Supermarket not found")
-                return redirect("orders-list")
+from django.views.decorators.http import require_POST
+from django.http import HttpResponseRedirect
 
-        return redirect("orders-list")
+
+@require_POST
+def delete_order_item(request, pk):
+    order_item = get_object_or_404(OrderItem, pk=pk)
+    order_id = order_item.order.id
+    order_item.delete()
+    messages.success(request, "Order item deleted successfully.")
+    return HttpResponseRedirect(reverse("orders:add_order", kwargs={"pk": order_id}))
+
+
+class EditOrderItemView(View):
+    def post(self, request, pk, *args, **kwargs):
+        order_item = get_object_or_404(OrderItem, pk=pk)
+        quantity = request.POST.get("quantity")
+
+        if quantity:
+            order_item.quantity = quantity
+            order_item.save()
+            messages.success(request, "Order item updated successfully.")
+        else:
+            messages.error(request, "Please enter a valid quantity.")
+
+        return HttpResponseRedirect(
+            reverse("orders:add_order", kwargs={"pk": order_item.order.id})
+        )
