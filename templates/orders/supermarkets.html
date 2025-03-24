@@ -28,7 +28,7 @@ Supermarkets
 
     <div class="row">
         {% for target in supermarkets %}
-        {% include 'components/supplier_supermarket_card.html' with target_url="supermarket-detail" %}
+        {% include 'components/supplier_supermarket_card.html' with target_url="orders:supermarket-detail" %}
         {% endfor %}
 
 
