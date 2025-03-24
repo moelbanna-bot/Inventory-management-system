@@ -7,6 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Product
 from shipments.models import Shipment, Supplier
 from .forms import ProductForm
+from accounts.permissions import is_manager
 
 
 class ProductListView(LoginRequiredMixin, ListView):
@@ -41,8 +42,12 @@ class ProductListView(LoginRequiredMixin, ListView):
 
 
 # Create your views here.
-class AddProduct(View):
+class AddProduct(LoginRequiredMixin, View):
+
     def post(self, request):
+        if not is_manager(request.user):
+            return self.handle_no_permission()
+
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
             product = form.save()
@@ -59,8 +64,10 @@ class AddProduct(View):
             )
 
 
-class EditProduct(View):
+class EditProduct(LoginRequiredMixin, View):
     def get(self, request, slug):
+        if not is_manager(request.user):
+            return self.handle_no_permission()
         try:
             product = Product.objects.get(slug=slug)
             form = ProductForm(instance=product)
@@ -105,7 +112,7 @@ class EditProduct(View):
             return redirect("product-list")
 
 
-class DeleteProduct(View):
+class DeleteProduct(LoginRequiredMixin, View):
     def post(self, request, slug):
         try:
             product = Product.objects.get(slug=slug)

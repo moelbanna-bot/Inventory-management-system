@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
-from django.views.generic import ListView, CreateView, View,DetailView
+from django.views.generic import ListView, CreateView, View, DetailView
 from django.http import JsonResponse
 from django.urls import reverse
 from django.contrib import messages
@@ -124,7 +124,6 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
         return redirect("orders-list")
 
 
-
 class SupermarketListView(LoginRequiredMixin, ListView):
     model = Supermarket
     template_name = "orders/supermarkets.html"
@@ -143,7 +142,7 @@ class SupermarketListView(LoginRequiredMixin, ListView):
         try:
             query_set = super().get_queryset().all()
             query_set = query_set.annotate(
-                total_purchase_shipments=Count("order", distinct=True),
+                total_purchase_orders=Count("order", distinct=True),
             )
             search_query = self.request.GET.get("search")
 
@@ -164,7 +163,7 @@ class AddSupermarketView(View):
     def post(self, request):
         form = SupermarketForm(request.POST)
         if form.is_valid():
-            supermarket= form.save()
+            supermarket = form.save()
             messages.success(request, f"Supermarket '{supermarket.name}' added successfully!")
             return redirect("supermarkets-list")  # Adjust this to your actual URL name
         else:
@@ -177,7 +176,6 @@ class AddSupermarketView(View):
             )
 
 
-
 class SupermarketDetailView(LoginRequiredMixin, DetailView):
     model = Supermarket
     template_name = "orders/supermarket_details.html"
@@ -188,14 +186,13 @@ class SupermarketDetailView(LoginRequiredMixin, DetailView):
     def get_queryset(self):
         query_set = super().get_queryset().filter(id=self.kwargs["id"])
         query_set = query_set.annotate(
-            total_purchase_shipments=Count("order", distinct=True),
+            total_purchase_orders=Count("order", distinct=True),
         )
         return query_set
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         supermarket = self.object  # This is already set by DetailView
-
 
         orders = Order.objects.filter(supermarket=supermarket).order_by('-created_at')
         purchase_orders = []
@@ -209,7 +206,6 @@ class SupermarketDetailView(LoginRequiredMixin, DetailView):
                 'item_count': total_quantity,
                 'pk': order.pk
             })
-
 
         context['purchase_orders'] = purchase_orders
         context['type'] = 'supermarket'
@@ -243,6 +239,3 @@ class SupermarketDetailView(LoginRequiredMixin, DetailView):
 
         # Redirect back to the same page
         return redirect("supermarket-detail", id=supermarket.id)
-
-
-
