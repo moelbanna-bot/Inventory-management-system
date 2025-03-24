@@ -1,7 +1,7 @@
 <div class="col-12 col-md-6 col-lg-4 col-xl-3 mb-4">
     <div class="card rounded-4">
         <div class="card-body">
-            <a href="" class="text-decoration-none text-dark">
+            <a href="{% url 'orders:order_details' item.reference_number %}" class="text-decoration-none text-dark">
                 <p class="email card-text fw-bold">
                     {% if item.supermarket %}
                         {{ item.supermarket.email }}

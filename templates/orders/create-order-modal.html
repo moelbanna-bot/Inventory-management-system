@@ -10,12 +10,12 @@
             </div>
 
             <!-- Form -->
-            <form method="POST" action="{% url 'create_order' %}">
+            <form method="POST" action="{% url 'orders:create_order' %}">
                 {% csrf_token %}
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="supermarket" class="form-label">Supermarket *</label>
-                        <select class="form-select" id="supermarket" name="supermarket" required>
+                        <select class="form-select" id="supermarket" name="supermarket_id" required>
                             <option selected disabled value="">Select a supermarket</option>
                             {% for supermarket in supermarkets %}
                                 <option value="{{ supermarket.id }}">{{ supermarket.name }}</option>

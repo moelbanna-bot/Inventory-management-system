@@ -5,18 +5,18 @@ import random
 from django.urls import reverse
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
-from django.core.validators import MinValueValidator,MaxValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
-
-User=get_user_model()
+User = get_user_model()
 
 # Create your models here.
 
+
 class Supermarket(models.Model):
-    name=models.CharField(max_length=50)
-    address=models.CharField(max_length=100)
-    email=models.EmailField()
+    name = models.CharField(max_length=50)
+    address = models.CharField(max_length=100)
+    email = models.EmailField()
     phone = models.CharField(max_length=15, blank=True, null=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -28,28 +28,45 @@ class Supermarket(models.Model):
     def __str__(self):
         return self.name
 
+
 class Order(models.Model):
+    NEW = "NW"
     PENDING = "PN"
-    CONFIRMED= "CO"
+    CONFIRMED = "CO"
     SHIPPED = "SH"
     DELIVERED = "DE"
     CANCELLED = "CA"
     STATUS_ORDER_CHOICES = [
+        (NEW, "New"),
         (PENDING, "Pending"),
         (CONFIRMED, "Confirmed"),
         (SHIPPED, "Shipped"),
         (DELIVERED, "Delivered"),
         (CANCELLED, "Cancelled"),
     ]
-    reference_number=models.CharField(max_length=15,unique=True)
-    access_date=models.DateField()
-    status=models.CharField(max_length=2,choices=STATUS_ORDER_CHOICES,default=PENDING)
+    reference_number = models.CharField(max_length=15, unique=True)
+    access_date = models.DateTimeField()
+    status = models.CharField(max_length=2, choices=STATUS_ORDER_CHOICES, default=NEW)
     supermarket = models.ForeignKey(Supermarket, on_delete=models.CASCADE)
-    created_by=models.ForeignKey(User,on_delete=models.PROTECT,related_name='created_orders')
-    confirmed_by=models.ForeignKey(User,on_delete=models.PROTECT,related_name='confirmed_orders',blank=True,null=True)
-    modified_by=models.ForeignKey(User,on_delete=models.PROTECT,related_name='modified_orders',blank=True,null=True)
-    created_at=models.DateTimeField(auto_now_add=True)
-    updated_at=models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(
+        User, on_delete=models.PROTECT, related_name="created_orders"
+    )
+    confirmed_by = models.ForeignKey(
+        User,
+        on_delete=models.PROTECT,
+        related_name="confirmed_orders",
+        blank=True,
+        null=True,
+    )
+    modified_by = models.ForeignKey(
+        User,
+        on_delete=models.PROTECT,
+        related_name="modified_orders",
+        blank=True,
+        null=True,
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     @classmethod
     def get_orders_by_user(cls, user):
@@ -77,37 +94,39 @@ class Order(models.Model):
             self.save()
 
     def get_absolute_url(self):
-        return reverse("order-detail", kwargs={"ref_num": self.reference_number})
+        return reverse("order-details", kwargs={"ref_num": self.reference_number})
 
     def __str__(self):
         return self.reference_number
 
+
 def generate_reference_number():
-    part1=random.randint(100,999)
-    part2=random.randint(100,999)
-    part3=random.randint(100,999)
+    part1 = random.randint(100, 999)
+    part2 = random.randint(100, 999)
+    part3 = random.randint(100, 999)
 
     return f"{part1}-{part2}-{part3}"
 
-@receiver(pre_save,sender=Order)
-def set_reference_number(sender,instance,**kwargs):
+
+@receiver(pre_save, sender=Order)
+def set_reference_number(sender, instance, **kwargs):
     if not instance.reference_number:
         while True:
-            reference_number=generate_reference_number()
+            reference_number = generate_reference_number()
             if not Order.objects.filter(reference_number=reference_number).exists():
-                instance.reference_number=reference_number
+                instance.reference_number = reference_number
                 break
 
+
 class OrderItem(models.Model):
-    order=models.ForeignKey(Order,on_delete=models.CASCADE,related_name='items')
-    product=models.ForeignKey(Product,on_delete=models.CASCADE)
-    quantity=models.PositiveIntegerField(validators=[MinValueValidator(1),MaxValueValidator(1000)])
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="items")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(1000)]
+    )
 
     def get_absolute_url(self):
         return reverse("orderitem-detail", kwargs={"pk": self.pk})
 
     def __str__(self):
         return f"{self.product.name} in {self.order.reference_number}"
-
-
-
