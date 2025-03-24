@@ -18,11 +18,7 @@
             <div class="login d-flex flex-column justify-content-center align-items-center border rounded p-4 gap-3 col-12 col-md-6 col-lg-4">
                 <img src="{% static 'images/logo.svg' %}" alt="logo" style="width: 24px">
                 <h2 class="m-0">
-                    {% if user.is_authenticated %}
-                        Welcome back, {{ user.username }}!
-                    {% else %}
-                        Welcome to our website!
-                    {% endif %}
+                    Login
                 </h2>
                 {% if form.non_field_errors %}
                     <div class="alert alert-danger" role="alert">
