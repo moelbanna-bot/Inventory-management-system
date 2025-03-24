@@ -92,6 +92,75 @@ class CreateOrderView(LoginRequiredMixin, TemplateView):
             return redirect("orders:create-order")
 
 
+class OrderDetailView(LoginRequiredMixin, DetailView):
+    model = Order
+    template_name = "orders/order_details.html"
+    context_object_name = "order"
+    login_url = "login"
+    slug_field = "reference_number"
+    slug_url_kwarg = "ref_num"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        order = self.object
+
+        context["can_confirm"] = order.status == Order.PENDING
+        context["can_ship"] = order.status == Order.CONFIRMED
+        context["can_deliver"] = order.status == Order.SHIPPED
+        # Only show cancel option if user is staff and order status is pending or confirmed
+        context["can_cancel"] = self.request.user.is_staff and order.status in [
+            Order.PENDING,
+            Order.CONFIRMED,
+        ]
+        return context
+
+
+class OrderActionView(LoginRequiredMixin, View):
+    def post(self, request, ref_num, action):
+        order = get_object_or_404(Order, reference_number=ref_num)
+
+        try:
+            if action == "confirm" and order.status == Order.PENDING:
+                if not request.user.is_staff:
+                    messages.error(request, "Only staff members can confirm orders.")
+                    return redirect("order-details", ref_num=order.reference_number)
+                order.mark_as_confirmed(request.user)
+                messages.success(
+                    request,
+                    f"Order #{order.reference_number} has been confirmed.",
+                )
+            elif action == "ship" and order.status == Order.CONFIRMED:
+                order.mark_as_shipped()
+                messages.success(
+                    request,
+                    f"Order #{order.reference_number} has been marked as shipped.",
+                )
+            elif action == "deliver" and order.status == Order.SHIPPED:
+                order.mark_as_delivered()
+                messages.success(
+                    request,
+                    f"Order #{order.reference_number} has been marked as delivered.",
+                )
+            elif action == "cancel" and order.status in [
+                Order.PENDING,
+                Order.CONFIRMED,
+            ]:
+                if not request.user.is_staff:
+                    messages.error(request, "Only staff members can cancel orders.")
+                    return redirect("order-details", ref_num=order.reference_number)
+                order.mark_as_cancelled()
+                messages.success(
+                    request,
+                    f"Order #{order.reference_number} has been cancelled.",
+                )
+            else:
+                messages.error(request, "Invalid action for current order status.")
+        except Exception as e:
+            messages.error(request, f"Error updating order: {str(e)}")
+
+        return redirect("orders:order-details", ref_num=order.reference_number)
+
+
 # supermarket views
 class SupermarketListView(LoginRequiredMixin, ListView):
     model = Supermarket

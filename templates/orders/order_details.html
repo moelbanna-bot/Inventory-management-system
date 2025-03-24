@@ -1,0 +1,239 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Order #{{ order.reference_number }}{% endblock %}
+
+{% block content %}
+    <div class="container-fluid py-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="h3 mb-0">Order #{{ order.reference_number }}</h1>
+                <p class="text-muted mb-0">Created on {{ order.created_at|date:"M d, Y" }}</p>
+            </div>
+            <div>
+                <a href="{% url 'orders:orders-list' %}" class="btn btn-outline-secondary me-2">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Orders
+                </a>
+                {% if can_confirm and user.is_staff %}
+                    <form method="post" action="{% url 'orders:order-action' order.reference_number 'confirm' %}"
+                          class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-confirm">
+                            <i class="fas fa-check-circle me-2"></i>Confirm Order
+                        </button>
+                    </form>
+                {% endif %}
+                {% if can_ship %}
+                    <form method="post" action="{% url 'orders:order-action' order.reference_number 'ship' %}"
+                          class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-truck me-2"></i>Mark as Shipped
+                        </button>
+                    </form>
+                {% endif %}
+                {% if can_deliver %}
+                    <form method="post" action="{% url 'orders:order-action' order.reference_number 'deliver' %}"
+                          class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-box-open me-2"></i>Mark as Delivered
+                        </button>
+                    </form>
+                {% endif %}
+                {% if can_cancel %}
+                    <form method="post" action="{% url 'orders:order-action' order.reference_number 'cancel' %}"
+                          class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-times-circle me-2"></i>Cancel Order
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Order Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Status:</strong>
+                                    {% if order.status == 'PN' %}
+                                        <span class="badge bg-warning">Pending</span>
+                                    {% elif order.status == 'CO' %}
+                                        <span class="badge bg-info">Confirmed</span>
+                                    {% elif order.status == 'SH' %}
+                                        <span class="badge bg-primary">Shipped</span>
+                                    {% elif order.status == 'DE' %}
+                                        <span class="badge bg-success">Delivered</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Cancelled</span>
+                                    {% endif %}
+                                </p>
+                                <p><strong>Supermarket:</strong> {{ order.supermarket.name }}</p>
+                                <p><strong>Created By:</strong> {{ order.created_by.username }}</p>
+                                <p><strong>Created At:</strong> {{ order.created_at|date:"M d, Y H:i" }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Expected Delivery:</strong> {{ order.access_date|date:"M d, Y" }}</p>
+                                {% if order.confirmed_by %}
+                                    <p><strong>Confirmed By:</strong> {{ order.confirmed_by.username }}</p>
+                                {% endif %}
+                                {% if order.modified_by %}
+                                    <p><strong>Last Modified By:</strong> {{ order.modified_by.username }}</p>
+                                {% endif %}
+                                <p><strong>Last Updated:</strong> {{ order.updated_at|date:"M d, Y H:i" }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Products</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Quantity</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for item in order.items.all %}
+                                    <tr>
+                                        <td>{{ item.product.name }}</td>
+                                        <td>{{ item.quantity }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Status History</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-marker bg-primary"></div>
+                                <div class="timeline-content">
+                                    <h6 class="mb-1">Created</h6>
+                                    <p class="mb-0 text-muted">{{ order.created_at|date:"M d, Y H:i" }}</p>
+                                </div>
+                            </div>
+                            {% if order.status != 'PN' %}
+                                <div class="timeline-item">
+                                    <div class="timeline-marker bg-info"></div>
+                                    <div class="timeline-content">
+                                        <h6 class="mb-1">Confirmed</h6>
+                                        <p class="mb-0 text-muted">{{ order.confirmed_by.username }}
+                                            - {{ order.updated_at|date:"M d, Y H:i" }}</p>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% if order.status in 'SH,DE' %}
+                                <div class="timeline-item">
+                                    <div class="timeline-marker bg-primary"></div>
+                                    <div class="timeline-content">
+                                        <h6 class="mb-1">Shipped</h6>
+                                        <p class="mb-0 text-muted">{{ order.updated_at|date:"M d, Y H:i" }}</p>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% if order.status == 'DE' %}
+                                <div class="timeline-item">
+                                    <div class="timeline-marker bg-success"></div>
+                                    <div class="timeline-content">
+                                        <h6 class="mb-1">Delivered</h6>
+                                        <p class="mb-0 text-muted">{{ order.updated_at|date:"M d, Y H:i" }}</p>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% if order.status == 'CA' %}
+                                <div class="timeline-item">
+                                    <div class="timeline-marker bg-danger"></div>
+                                    <div class="timeline-content">
+                                        <h6 class="mb-1">Cancelled</h6>
+                                        <p class="mb-0 text-muted">{{ order.updated_at|date:"M d, Y H:i" }}</p>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_css %}
+    <style>
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 40px;
+            margin-bottom: 20px;
+        }
+
+        .timeline-marker {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+        }
+
+        .timeline-content {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+        }
+
+        .timeline-item:not(:last-child):before {
+            content: '';
+            position: absolute;
+            left: 9px;
+            top: 20px;
+            bottom: -20px;
+            width: 2px;
+            background: #e9ecef;
+        }
+
+        .btn-confirm {
+            background-color: #2f6b62; /* Your main teal/green color */
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 4px;
+        }
+
+        .btn-confirm:hover {
+            background-color: #265950; /* Slightly darker shade for hover */
+            color: white;
+        }
+
+        .btn-confirm i {
+            margin-right: 8px;
+        }
+    </style>
+{% endblock %}

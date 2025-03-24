@@ -64,7 +64,7 @@
                             <span>{{ order.items.count }}</span>
                         </div>
                         <div class="detail-row">
-                            <a href=""
+                            <a href="{% url 'orders:order-details' order.reference_number %}"
                                class="btn btn-outline-primary">
                                 View details
                             </a>
@@ -85,6 +85,11 @@
                         <li class="page-item">
                             <a class="page-link" href="?page=
 
+
+
+
+
+
                                     {{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">
                                 Previous
                             </a>
@@ -100,6 +105,11 @@
                             <li class="page-item">
                                 <a class="page-link" href="?page=
 
+
+
+
+
+
                                         {{ num }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">
                                     {{ num }}
                                 </a>
@@ -110,6 +120,11 @@
                     {% if page_obj.has_next %}
                         <li class="page-item">
                             <a class="page-link" href="?page=
+
+
+
+
+
 
                                     {{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">
                                 Next
