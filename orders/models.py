@@ -30,14 +30,12 @@ class Supermarket(models.Model):
 
 
 class Order(models.Model):
-    NEW = "NW"
     PENDING = "PN"
     CONFIRMED = "CO"
     SHIPPED = "SH"
     DELIVERED = "DE"
     CANCELLED = "CA"
     STATUS_ORDER_CHOICES = [
-        (NEW, "New"),
         (PENDING, "Pending"),
         (CONFIRMED, "Confirmed"),
         (SHIPPED, "Shipped"),
@@ -46,7 +44,9 @@ class Order(models.Model):
     ]
     reference_number = models.CharField(max_length=15, unique=True)
     access_date = models.DateTimeField()
-    status = models.CharField(max_length=2, choices=STATUS_ORDER_CHOICES, default=NEW)
+    status = models.CharField(
+        max_length=2, choices=STATUS_ORDER_CHOICES, default=PENDING
+    )
     supermarket = models.ForeignKey(Supermarket, on_delete=models.CASCADE)
     created_by = models.ForeignKey(
         User, on_delete=models.PROTECT, related_name="created_orders"
