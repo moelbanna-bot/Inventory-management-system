@@ -245,10 +245,12 @@ class ShipmentDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         shipment = self.object
+        
         context["can_confirm"] = shipment.status == Shipment.PENDING
         context["can_ship"] = shipment.status == Shipment.CONFIRMED
         context["can_deliver"] = shipment.status == Shipment.SHIPPED
-        context["can_cancel"] = shipment.status in [
+        # Only show cancel option if user is staff and shipment status is pending or confirmed
+        context["can_cancel"] = self.request.user.is_staff and shipment.status in [
             Shipment.PENDING,
             Shipment.CONFIRMED,
         ]
@@ -293,6 +295,12 @@ class ShipmentActionView(LoginRequiredMixin, View):
                 Shipment.PENDING,
                 Shipment.CONFIRMED,
             ]:
+                # Check if user is staff
+                if not request.user.is_staff:
+                    messages.error(request, "Only staff members can cancel shipments.")
+                    return redirect(
+                        "shipment-detail", ref_num=shipment.reference_number
+                    )
                 shipment.mark_as_cancelled()
                 messages.success(
                     request,
