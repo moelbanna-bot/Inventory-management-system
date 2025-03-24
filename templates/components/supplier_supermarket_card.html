@@ -16,7 +16,8 @@
                     <i class="fa-solid fa-location-dot col-1"></i>
                     <span class="col-11">{{target.address}}</span>
                 </h6>
-                <h6 class="card-subtitle text-body-secondary mb-3 me-2 "><i
+                {% if type == "supplier" %}
+                <h6 class="card-subtitle text-body-secondary me-2 "><i
                         class="fa-solid fa-truck col-1"></i>
                     <span class="col-7">Purchase shipments</span>
                     <span class="badge text-body-secondary rounded-pill " style="background-color: #448886">
@@ -24,7 +25,7 @@
                     </span>
                 </h6>
 
-
+                {% else %}
                 <h6 class="card-subtitle my-0 text-body-secondary me-2"><i
                         class="fa-solid fa-cart-shopping col-1"></i>
                     <span class="col-7">Purchase orders</span>
@@ -32,6 +33,7 @@
                             {{target.total_purchase_orders}}
                         </span>
                 </h6>
+                {% endif %}
 
             </div>
         </a>
