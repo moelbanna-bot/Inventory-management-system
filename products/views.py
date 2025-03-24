@@ -7,6 +7,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Product
 from shipments.models import Shipment, Supplier
 from .forms import ProductForm
+from django.db.models.functions import TruncMonth
+from datetime import datetime, timedelta
+from django.db.models import Count, Sum, F
 
 
 class ProductListView(LoginRequiredMixin, ListView):
@@ -135,5 +138,79 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         context["total_products"] = Product.objects.count()
         context["total_shipments"] = Shipment.objects.count()
         context["total_suppliers"] = Supplier.objects.count()
+
+        # Check if user is a manager
+        is_manager = self.request.user.groups.filter(name="Manager").exists()
+        context["is_manager"] = is_manager
+
+        # Get low stock count only for managers
+        if is_manager:
+            context["low_stock_count"] = Product.objects.filter(
+                current_quantity__lte=F("critical_quantity")
+            ).count()
+
+        # Get last 6 months for inventory trends
+        last_6_months = []
+        for i in range(5, -1, -1):
+            date = datetime.now() - timedelta(days=30 * i)
+            last_6_months.append(date.strftime("%b"))
+        context["inventory_trends_labels"] = last_6_months
+
+        # Get total inventory for each month (you might want to adjust this based on your actual data model)
+        inventory_data = []
+        for i in range(5, -1, -1):
+            date = datetime.now() - timedelta(days=30 * i)
+            total = (
+                Product.objects.filter(created_at__lte=date).aggregate(
+                    total=Sum("current_quantity")
+                )["total"]
+                or 0
+            )
+            inventory_data.append(total)
+        context["inventory_trends_data"] = inventory_data
+
+        # Get shipment status distribution
+        shipment_status = (
+            Shipment.objects.values("status")
+            .annotate(count=Count("id"))
+            .order_by("status")
+        )
+
+        status_labels = []
+        status_data = []
+        for status in shipment_status:
+            status_labels.append(status["status"])
+            status_data.append(status["count"])
+
+        context["shipment_status_labels"] = status_labels
+        context["shipment_status_data"] = status_data
+
+        # Get monthly shipments data
+        monthly_shipments = (
+            Shipment.objects.annotate(month=TruncMonth("created_at"))
+            .values("month")
+            .annotate(count=Count("id"))
+            .order_by("month")[:6]
+        )
+
+        monthly_labels = []
+        monthly_data = []
+        for shipment in monthly_shipments:
+            monthly_labels.append(shipment["month"].strftime("%b"))
+            monthly_data.append(shipment["count"])
+
+        context["monthly_shipments_labels"] = monthly_labels
+        context["monthly_shipments_data"] = monthly_data
+
+        # Get top products data
+        top_products = Product.objects.order_by("-current_quantity")[:5]
+        top_products_labels = []
+        top_products_data = []
+        for product in top_products:
+            top_products_labels.append(product.name)
+            top_products_data.append(product.current_quantity)
+
+        context["top_products_labels"] = top_products_labels
+        context["top_products_data"] = top_products_data
 
         return context
