@@ -3,63 +3,115 @@
 <!--load statics files-->
 {% load static %}
 
+{% block title %}Orders{% endblock %}
+
 {% block extra_css %}
-
     <link href="{% static 'css/shipment.css' %}" rel="stylesheet">
-
 {% endblock %}
 
 {% block content %}
-
-    <div class="container px-5 mt-5">
-        <h1 class="text">Orders</h1>
-
-        <!-- Search Bar -->
-        {% include 'components/search-bar.html' with btn_value="Create Order" target_modal="#CreateOrderModal" %}
-
-        <div class="mb-4">
-            <div class="row">
-                <div class="col-12 col-md-6 my-4 mb-md-0">
-                    <h3>Supermarkets</h3>
-                    <ul class="box-button-list">
-                        <li>Booksyfi</li>
-                        <li>Bound & Beyond</li>
-                        <li>LittLinks Books</li>
-                        <li>NovelNest Supply</li>
-                        <li>PageTurner</li>
-                        <li>Macdonald</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12 col-md-6 mb-4 mb-md-0">
-                    <h3>Status</h3>
-                    <ul class="box-button-list">
-                        <li>Draft</li>
-                        <li>Sent</li>
-                        <li>Received</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="row">
-                {% if not orders %}
-                    <div class="d-flex flex-column justify-content-center align-items-center p-5">
-                        <i class="fa-solid fa-inbox fa-6x text-secondary"></i>
-                        <p class="text-muted fw-bold mt-3">No purchase orders yet</p>
-                    </div>
-                {% else %}
-                    {% for order in orders %}
-                        {% include "components/order_shipment_card.html" with item=order %}
-                    {% endfor %}
-                {% endif %}
-
-
-            </div>
+    <div class="container-fluid py-4">
+        <div class="page-header">
+            <h1>Orders</h1>
+            <a href="" class="btn btn-primary">Create order</a>
         </div>
 
+        <!-- Search -->
+        <div class="search-container">
+            <form method="get" class="d-flex gap-3">
+                <div class="flex-grow-1">
+                    <input type="text" name="search" class="form-control" placeholder="Search orders..."
+                           value="{{ request.GET.search|default:'' }}">
+                </div>
+            </form>
+        </div>
+
+        <!-- Status Filters -->
+        <div class="status-filters">
+            <a href="" class="status-filter {% if not request.GET.status %}active{% endif %}">
+                All
+            </a>
+            {% for status, label in status_choices %}
+                <a href="?status={{ status }}"
+                   class="status-filter {% if request.GET.status == status %}active{% endif %}">
+                    {{ label }}
+                </a>
+            {% endfor %}
+        </div>
+
+        <!-- Orders Grid -->
+        <div class="orders-grid">
+            {% for order in orders %}
+                <div class="order-card">
+                    <div class="order-header">
+                        <span class="status-badge status-{{ order.status }}">{{ order.get_status_display }}</span>
+                    </div>
+                    <div class="order-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Reference</span>
+                            <span>{{ order.reference_number }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Supplier</span>
+                            <span>{{ order.supplier.name }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Created at</span>
+                            <span>{{ order.created_at|date:"n/j/Y, g:i A" }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Items count</span>
+                            <span>{{ order.items.count }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <a href=""
+                               class="btn btn-outline-primary">
+                                View details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="empty-state">
+                    <p>No orders found</p>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if is_paginated %}
+            <nav class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">
+                                Previous
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <li class="page-item active">
+                                <span class="page-link">{{ num }}</span>
+                            </li>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ num }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">
+                                    {{ num }}
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">
+                                Next
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
     </div>
-
-    {% include 'orders/create-order-modal.html' %}
-
-    {% include 'components/pagination.html' %}
 {% endblock %}

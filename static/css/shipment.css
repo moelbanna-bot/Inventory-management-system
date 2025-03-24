@@ -95,6 +95,27 @@
 }
 
 
+.order-card {
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    padding: 1.25rem;
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.order-amount {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #333;
+}
+
+
 .status-badge {
     padding: 4px 12px;
     border-radius: 4px;
@@ -153,6 +174,15 @@
     flex-direction: column;
     gap: 0.75rem;
 }
+
+.order-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+
+
 
 .detail-row {
     display: flex;
@@ -244,6 +274,13 @@
     margin-top: 1.5rem;
 }
 
+.orders-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
 .empty-state {
     text-align: center;
     padding: 2rem;
@@ -275,6 +312,10 @@
     }
 
     .shipment-header {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    .order-header {
         flex-direction: column;
         gap: 0.5rem;
     }
