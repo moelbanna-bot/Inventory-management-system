@@ -1,24 +1,24 @@
 {% load widget_tweaks %}
 
-<div class="modal fade" id="SupplierModal" tabindex="-1" aria-labelledby="SupplierModalLabel" aria-hidden="true">
+<div class="modal fade" id="SupermarketModal" tabindex="-1" aria-labelledby="SupermarketModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-light">
-                <h5 class="modal-title fw-bold" id="SupplierModalLabel">
-                    {% if supplier %}
-                    <i class="fas fa-edit me-2"></i>Edit Supplier
+                <h5 class="modal-title fw-bold" id="SupermarketModalLabel">
+                    {% if supermarket %}
+                    <i class="fas fa-edit me-2"></i>Edit Supermarket
                     {% else %}
-                    <i class="fas fa-plus-circle me-2"></i>Add Supplier
+                    <i class="fas fa-plus-circle me-2"></i>Add Supermarket
                     {% endif %}
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form method="POST"
-                      {% if supplier %}
-                      action="{% url 'edit_supplier' supplier.slug %}"
+                      {% if supermarket %}
+                      action="{% url 'supermarket-detail' supermarket.pk %}"
                       {% else %}
-                      action="{% url 'add-supplier' %}"
+                      action="{% url 'add-supermarket' %}"
                       {% endif %}
                       class="needs-validation">
                     {% csrf_token %}
@@ -69,10 +69,10 @@
                     <div class="d-flex justify-content-end gap-2 mt-4">
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn button-primary">
-                            {% if supplier %}
-                            <i class="fas fa-save me-1"></i> Update Supplier
+                            {% if supermarket %}
+                            <i class="fas fa-save me-1"></i> Update Supermarket
                             {% else %}
-                            <i class="fas fa-save me-1"></i> Add Supplier
+                            <i class="fas fa-save me-1"></i> Add Supermarket
                             {% endif %}
                         </button>
                     </div>
