@@ -101,7 +101,7 @@ class PlaceOrderView(View):
             return redirect("orders:orders-list")
         order.save()
         messages.success(request, "Order placed successfully.")
-        return redirect("orders:order_details", pk=order.id)
+        return redirect("orders:orders-list")
 
 
 @require_POST
@@ -158,3 +158,24 @@ class OrderDetailView(LoginRequiredMixin, TemplateView):
         context["order"] = order
         context["order_items"] = order.items.all()
         return context
+
+
+class OrderStatusUpdateView(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        order_reference_number = self.kwargs["reference_number"]
+        order = get_object_or_404(Order, reference_number=order_reference_number)
+
+        if "confirm" in request.POST:
+            order.mark_as_confirmed(request.user)
+            messages.success(request, "Order confirmed successfully.")
+        elif "update" in request.POST:
+            new_status = request.POST.get("order_status_dropdown")
+            print("##### newStatus#####", new_status)
+            if new_status in ["confirmed", "shipped", "delivered", "cancelled"]:
+                order.status = new_status
+                order.save()
+                messages.success(request, f"Order status updated to {new_status}.")
+            else:
+                messages.error(request, "Invalid status selected.")
+
+        return redirect("orders:order_details", reference_number=order_reference_number)
