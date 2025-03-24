@@ -1,99 +1,290 @@
-.card {
-    border: none;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
-    border-radius: 10px;
+/* Color Variables */
+:root {
+    --primary-color: #2f6b62; /* The teal/green from your sidebar */
+    --secondary-color: #f8f9fa;
+    --text-color: #333;
+    --border-color: #e9ecef;
+    --status-new: #e7f1ff; /* Light blue for new status */
+    --status-confirmed: #cfe2ff;
+    --status-shipped: #0d6efd;
+    --status-delivered: #198754;
+    --status-cancelled: #dc3545;
 }
 
-.card-title {
-    color: #2c3e50;
-    font-weight: 600;
+/* Page Header */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
 }
 
-.form-select,
-.form-control {
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 0.75rem 1rem;
-    transition: all 0.3s ease;
+.page-header h1 {
+    font-size: 1.5rem;
+    color: var(--text-color);
+    margin: 0;
 }
 
-.form-select:focus,
-.form-control:focus {
-    border-color: #3498db;
-    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+/* Search Bar */
+.search-container {
+    background: white;
+    padding: 1rem;
+    border-radius: 4px;
+    border: 1px solid #e9ecef;
 }
 
-.btn-primary {
-    background-color: #3498db;
-    border-color: #3498db;
+.search-container .form-control {
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
     padding: 0.5rem 1rem;
-    border-radius: 8px;
-    transition: all 0.3s ease;
 }
 
-.btn-primary:hover {
-    background-color: #2980b9;
-    border-color: #2980b9;
-    transform: translateY(-1px);
+/* Status Filters */
+.status-filters {
+    display: flex;
+    gap: 1rem;
+    margin: 1rem 0;
 }
 
-.btn-light {
-    background-color: #f8f9fa;
-    border-color: #e0e0e0;
+.status-filter {
+    background: none;
+    border: none;
+    padding: 0.5rem 0;
     color: #6c757d;
+    cursor: pointer;
+    position: relative;
+    text-decoration: none; /* Remove underline */
 }
 
-.btn-light:hover {
-    background-color: #e9ecef;
-    border-color: #dee2e6;
+.status-filter:hover {
+    text-decoration: none; /* Remove underline on hover */
+    color: #2f6b62;
 }
 
-.btn-danger {
-    background-color: #e74c3c;
-    border-color: #e74c3c;
+.status-filter.active {
+    color: #2f6b62;
+    font-weight: 500;
 }
 
-.btn-danger:hover {
-    background-color: #c0392b;
-    border-color: #c0392b;
+.status-filter.active::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: #2f6b62;
+}
+
+/* Shipment Cards */
+.shipment-card {
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    padding: 1.25rem;
+}
+
+.shipment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.shipment-amount {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Status Badges */
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+/* Status-specific styles - with correct status codes */
+.status-PN {
+    /* Pending */
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.status-CO {
+    /* Confirmed */
+    background-color: #cce5ff;
+    color: #004085;
+}
+
+.status-SP {
+    /* Shipped */
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status-DE {
+    /* Delivered */
+    background-color: #e8f5e9;
+    color: #1b5e20;
+}
+
+.status-CN {
+    /* Cancelled */
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* Create Button */
+.create-button {
+    background-color: var(--primary-color);
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+}
+
+.create-button:hover {
+    background-color: #265950;
+}
+
+/* Shipment Details */
+.shipment-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.detail-label {
+    color: #6c757d;
+    font-size: 0.875rem;
+}
+
+/* Form Controls */
+.form-control {
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.5rem;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(47, 107, 98, 0.25);
+}
+
+/* Table Styles */
+.table {
+    background: #fff;
+    border-radius: 4px;
+    overflow: hidden;
 }
 
 .table th {
-    font-weight: 600;
-    color: #2c3e50;
-    border-bottom: 2px solid #f1f1f1;
+    background-color: var(--secondary-color);
+    font-weight: 500;
+    padding: 1rem;
 }
 
 .table td {
+    padding: 1rem;
     vertical-align: middle;
-    border-bottom: 1px solid #f1f1f1;
 }
 
-.removeProduct {
-    width: 32px;
-    height: 32px;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 6px;
-}
-
-.bi-trash {
-    font-size: 14px;
-}
-
-/* Responsive adjustments */
+/* Responsive Design */
 @media (max-width: 768px) {
-    .container {
-        padding: 1rem;
+    .status-filters {
+        flex-wrap: wrap;
     }
 
-    .card {
-        margin-bottom: 1rem;
+    .shipment-header {
+        flex-direction: column;
+        gap: 0.5rem;
     }
+}
 
-    .table-responsive {
-        margin: 0 -1rem;
-    }
+/* Button Styles */
+.btn-primary {
+    background-color: #2f6b62; /* Teal green from your screenshot */
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #265950; /* Slightly darker shade for hover */
+}
+
+.btn-outline-primary {
+    background-color: transparent;
+    border: 1px solid #2f6b62;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #2f6b62;
+}
+
+.btn-outline-primary:hover {
+    background-color: #2f6b62;
+    color: white;
+}
+
+/* Action Buttons (for view/edit/delete) */
+.btn-action {
+    padding: 6px 12px;
+    font-size: 14px;
+    border-radius: 4px;
+}
+
+/* Shipments Grid */
+.shipments-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 2rem;
+    color: #6c757d;
+}
+
+/* Confirm Shipment Button */
+.btn-confirm {
+    background-color: #2f6b62; /* Your main teal/green color */
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 4px;
+}
+
+.btn-confirm:hover {
+    background-color: #265950; /* Slightly darker shade for hover */
+    color: white;
+}
+
+.btn-confirm i {
+    margin-right: 8px;
 }
