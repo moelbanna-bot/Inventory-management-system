@@ -47,13 +47,15 @@
             </div>
             {% if is_manager %}
                 <div class="col-md-3">
-                    <div class="stat-card">
-                        <div class="card-body">
-                            <i class="bi bi-exclamation-triangle stat-icon"></i>
-                            <h5>Low Stock Items</h5>
-                            <h2>{{ low_stock_count }}</h2>
+                    <a href="{% url 'low-stock-products' %}" class="text-decoration-none">
+                        <div class="stat-card">
+                            <div class="card-body">
+                                <i class="bi bi-exclamation-triangle stat-icon"></i>
+                                <h5>Low Stock Items</h5>
+                                <h2>{{ low_stock_count }}</h2>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             {% endif %}
         </div>
