@@ -21,6 +21,8 @@ class SupplierListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context["current_page"] = self.request.GET.get("page", 1)
         context["form"] = SupplierForm()
+        # Add the type to differentiate between supplier and supermarket
+        context['type'] = 'supplier'
         return context
 
     def get_queryset(self):
