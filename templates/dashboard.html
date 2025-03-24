@@ -7,6 +7,31 @@
             rel="stylesheet"
     />
     <link href="{% static 'css/dashboard.css' %}" rel="stylesheet"/>
+    <style>
+        .chart-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+            margin-bottom: 20px;
+            position: relative;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chart-container canvas {
+            max-width: 100%;
+            height: auto !important;
+            margin: auto;
+        }
+        
+        .chart-container h4 {
+            margin-bottom: 1.5rem;
+            color: #333;
+            font-weight: 600;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}

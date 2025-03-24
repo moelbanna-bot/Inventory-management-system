@@ -6,25 +6,26 @@
 
 <!--title-->
 {% block title %}
-Supermarkets
+    Supermarkets
 {% endblock %}
 
 
 <!--loading css file-->
 {% block extra_css %}
-<link href="{% static 'css/supplier.css' %}" rel="stylesheet">
+    <link href="{% static 'css/supplier.css' %}" rel="stylesheet">
 {% endblock %}
 
 
 <!--main content-->
 {% block content %}
-<div class="container  mt-5 px-5">
-    <h2 class="fw-bold">SuperMarkets</h2>
-    <!--  search bar and add supplier button-->
-    <div class="row mb-3">
-        {% include 'components/search-bar.html' with btn_value="Add supermarket" target_modal="#SupermarketModal" %}
+    <div class="container  mt-5 px-5">
+        <h2 class="fw-bold">SuperMarkets</h2>
+        <!--  search bar and add supplier button-->
+        <div class="row mb-3">
+            {% include 'components/search-bar.html' with btn_value="Add market" target_modal="#SupermarketModal" %}
 
-    </div>
+        </div>
+
 
     <div class="row">
         {% for target in supermarkets %}
@@ -32,16 +33,16 @@ Supermarkets
         {% endfor %}
 
 
-        <!-- ِAdd Supplier Modal -->
-        {% include 'orders/supermarket-form-modal.html' %}
+            <!-- ِAdd Supplier Modal -->
+            {% include 'orders/supermarket-form-modal.html' %}
+
+        </div>
 
     </div>
 
-</div>
-
-<div class="pagination-wrapper text-center mt-4">
-    {% include 'components/pagination.html' %}
-</div>
+    <div class="pagination-wrapper text-center mt-4">
+        {% include 'components/pagination.html' %}
+    </div>
 {% endblock %}
 
 

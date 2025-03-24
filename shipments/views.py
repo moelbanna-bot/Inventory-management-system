@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render
 from django.views import View
 from django.views.generic import ListView, DetailView, TemplateView
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.db.models import Q, Count
 from django.contrib import messages
@@ -27,7 +27,7 @@ class SupplierListView(LoginRequiredMixin, ListView):
         context["current_page"] = self.request.GET.get("page", 1)
         context["form"] = SupplierForm()
         # Add the type to differentiate between supplier and supermarket
-        context['type'] = 'supplier'
+        context["type"] = "supplier"
         return context
 
     def get_queryset(self):
@@ -252,7 +252,7 @@ class ShipmentDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         shipment = self.object
-        
+
         context["can_confirm"] = shipment.status == Shipment.PENDING
         context["can_ship"] = shipment.status == Shipment.CONFIRMED
         context["can_deliver"] = shipment.status == Shipment.SHIPPED

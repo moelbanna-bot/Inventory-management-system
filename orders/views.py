@@ -224,13 +224,15 @@ class SupermarketListView(LoginRequiredMixin, ListView):
             return Supermarket.objects.none()
 
 
-class AddSupermarketView(View):
+class AddSupermarketView(LoginRequiredMixin, View):
     def post(self, request):
         form = SupermarketForm(request.POST)
         if form.is_valid():
             supermarket = form.save()
+
             messages.success(request, f"Supermarket '{supermarket.name}' added successfully!")
             return redirect("orders:supermarkets-list")  # Adjust this to your actual URL name
+
         else:
             # Add show_modal flag to indicate we need to reopen the modal
             supermarkets = Supermarket.objects.all()
@@ -246,7 +248,7 @@ class SupermarketDetailView(LoginRequiredMixin, DetailView):
     template_name = "orders/supermarket_details.html"
     context_object_name = "supermarket"
     login_url = "login"
-    pk_url_kwarg = 'id'
+    pk_url_kwarg = "id"
 
     def get_queryset(self):
         query_set = super().get_queryset().filter(id=self.kwargs["id"])
@@ -259,25 +261,27 @@ class SupermarketDetailView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         supermarket = self.object  # This is already set by DetailView
 
-        orders = Order.objects.filter(supermarket=supermarket).order_by('-created_at')
+        orders = Order.objects.filter(supermarket=supermarket).order_by("-created_at")
         purchase_orders = []
         for order in orders:
-            total_quantity = order.items.aggregate(total=Sum('quantity'))['total'] or 0
+            total_quantity = order.items.aggregate(total=Sum("quantity"))["total"] or 0
             status_display = order.get_status_display()
-            purchase_orders.append({
-                'id': order.reference_number,
-                'due_date': order.access_date,
-                'status': status_display,
-                'item_count': total_quantity,
-                'pk': order.pk
-            })
+            purchase_orders.append(
+                {
+                    "id": order.reference_number,
+                    "due_date": order.access_date,
+                    "status": status_display,
+                    "item_count": total_quantity,
+                    "pk": order.pk,
+                }
+            )
 
-        context['purchase_orders'] = purchase_orders
-        context['type'] = 'supermarket'
-        context['supermarket'].total_purchase_shipments = orders.count()
+        context["purchase_orders"] = purchase_orders
+        context["type"] = "supermarket"
+        context["supermarket"].total_purchase_shipments = orders.count()
 
-        if 'form' not in kwargs:
-            context['form'] = SupermarketForm(instance=supermarket)
+        if "form" not in kwargs:
+            context["form"] = SupermarketForm(instance=supermarket)
 
         return context
 
@@ -285,19 +289,23 @@ class SupermarketDetailView(LoginRequiredMixin, DetailView):
         self.object = self.get_object()
         supermarket = self.object
 
-        if 'toggle_status' in request.POST:
+        if "toggle_status" in request.POST:
             # Toggle is_active field
             supermarket.is_active = not supermarket.is_active
             supermarket.save()
 
             status = "activated" if supermarket.is_active else "deactivated"
-            messages.success(request, f"Supermarket '{supermarket.name}' {status} successfully!")
+            messages.success(
+                request, f"Supermarket '{supermarket.name}' {status} successfully!"
+            )
         else:
             # This is a regular update request - use your existing logic
             form = SupermarketForm(request.POST, instance=supermarket)
             if form.is_valid():
                 form.save()
-                messages.success(request, f"Supermarket '{supermarket.name}' updated successfully!")
+                messages.success(
+                    request, f"Supermarket '{supermarket.name}' updated successfully!"
+                )
             else:
                 context = self.get_context_data(form=form)
                 return self.render_to_response(context)
