@@ -18,7 +18,8 @@
                     <form method="post" action="{% url 'shipment-action' shipment.reference_number 'confirm' %}"
                           class="d-inline">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-info">
+                        <button type="submit" class="btn btn-confirm
+                        ">
                             <i class="fas fa-check-circle me-2"></i>Confirm Shipment
                         </button>
                     </form>
@@ -215,6 +216,25 @@
             bottom: -20px;
             width: 2px;
             background: #e9ecef;
+        }
+
+        .btn-confirm {
+            background-color: #2f6b62; /* Your main teal/green color */
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 4px;
+        }
+
+        .btn-confirm:hover {
+            background-color: #265950; /* Slightly darker shade for hover */
+            color: white;
+        }
+
+        .btn-confirm i {
+            margin-right: 8px;
         }
     </style>
 {% endblock %}
