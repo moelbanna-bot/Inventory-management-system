@@ -66,7 +66,7 @@ def register(request):
     return render(request, 'accounts/register_user.html', {'form': form})
 
 
-@user_passes_test(is_admin, login_url='login')
+# @user_passes_test(is_admin, login_url='login')
 class CustomPasswordResetView(PasswordResetView):
     form_class = CustomPasswordResetForm
     template_name = 'registration/password_reset_form.html'
