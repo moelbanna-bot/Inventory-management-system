@@ -5,6 +5,8 @@ from django.core.exceptions import ValidationError
 
 
 class ProductForm(ModelForm):
+    image = forms.ImageField(required=False, widget=forms.FileInput(attrs={'class': 'form-control'}))
+    
     class Meta:
         model = Product
         fields = ["name", "description", "image", "critical_quantity"]
