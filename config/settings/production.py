@@ -1,36 +1,68 @@
 from .base import *
 import os
+import sys
 import dj_database_url
+import logging
 
-DEBUG = False
+# Print debug info to console
+print("LOADING PRODUCTION SETTINGS")
+print("Python path:", sys.path)
+print("Current working directory:", os.getcwd())
+print("Environment variables:", [(k, v[:10] + '...' if len(v) > 10 else v) for k, v in os.environ.items() if k in ('DJANGO_SETTINGS_MODULE', 'DATABASE_URL', 'DEBUG', 'ALLOWED_HOSTS')])
+
+# Configure logging
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s [%(levelname)s] %(message)s',
+    handlers=[logging.StreamHandler()],
+)
+
+# Allow debug mode in production only if explicitly set
+DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 
 # Use environment variables or fallback to hardcoded values for Railway
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,.railway.app').split(',')
+logging.info(f"ALLOWED_HOSTS set to: {ALLOWED_HOSTS}")
 
 # CSRF and CORS settings
 CSRF_TRUSTED_ORIGINS = [f'https://{host}' for host in ALLOWED_HOSTS if not host.startswith('localhost') and not host.startswith('127.0.0.1')]
+if not CSRF_TRUSTED_ORIGINS:
+    # Add default Railway domain
+    CSRF_TRUSTED_ORIGINS = ['https://*.railway.app']
 
-# Serve static files properly
+# Optionally disable HTTPS redirect in certain environments
+SECURE_SSL_REDIRECT = os.environ.get('SECURE_SSL_REDIRECT', 'True').lower() == 'true'
+SESSION_COOKIE_SECURE = SECURE_SSL_REDIRECT
+CSRF_COOKIE_SECURE = SECURE_SSL_REDIRECT
+SECURE_BROWSER_XSS_FILTER = True
+
+# Configure static files
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Override the database settings completely - use Railway's DATABASE_URL
-DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL'),
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
-}
-
-# Security settings
-SECURE_SSL_REDIRECT = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-SECURE_BROWSER_XSS_FILTER = True
+# Database configuration
+database_url = os.environ.get('DATABASE_URL')
+if database_url:
+    logging.info(f"Configuring database with DATABASE_URL (masked: {database_url[:15]}...)")
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=database_url,
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
+    }
+else:
+    logging.warning("No DATABASE_URL found, using SQLite as fallback")
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
 
 # Disable email settings if not configured
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 if not (EMAIL_HOST_USER and EMAIL_HOST_PASSWORD):
+    logging.warning("Email settings not configured, using console backend")
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

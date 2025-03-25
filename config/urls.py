@@ -19,7 +19,19 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from products.views import DashboardView
+from django.http import HttpResponse, JsonResponse
+import os
+import sys
 
+# Simple health check view
+def health_check(request):
+    db_config = {
+        'database_url_set': 'DATABASE_URL' in os.environ,
+        'django_settings': os.environ.get('DJANGO_SETTINGS_MODULE', 'Not set'),
+        'python_version': sys.version,
+        'working_directory': os.getcwd(),
+    }
+    return JsonResponse({'status': 'ok', 'config': db_config})
 
 urlpatterns = [
     path("", DashboardView.as_view(), name="home"),
@@ -28,6 +40,7 @@ urlpatterns = [
     path("accounts/", include("accounts.urls")),
     path("orders/", include("orders.urls")),
     path("shipments/", include("shipments.urls")),
+    path("health/", health_check, name="health_check"),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
