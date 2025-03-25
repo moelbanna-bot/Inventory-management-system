@@ -5,6 +5,7 @@ import dj_database_url
 import logging
 
 # Print debug info to console
+SECRET_KEY = os.getenv("SECRET_KEY", "3e041fd6d542e904b56b6d65b40a71dff8ebdcd90850f4af5c99655acb5dbce5")
 print("LOADING PRODUCTION SETTINGS")
 print("Python path:", sys.path)
 print("Current working directory:", os.getcwd())
