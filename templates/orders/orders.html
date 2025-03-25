@@ -53,8 +53,8 @@
                             <span>{{ order.reference_number }}</span>
                         </div>
                         <div class="detail-row">
-                            <span class="detail-label">Supplier</span>
-                            <span>{{ order.supplier.name }}</span>
+                            <span class="detail-label">Supermarket</span>
+                            <span>{{ order.supermarket.name }}</span>
                         </div>
                         <div class="detail-row">
                             <span class="detail-label">Created at</span>
@@ -101,6 +101,7 @@
 
 
 
+
                                     {{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">
                                 Previous
                             </a>
@@ -131,6 +132,7 @@
 
 
 
+
                                         {{ num }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">
                                     {{ num }}
                                 </a>
@@ -141,6 +143,7 @@
                     {% if page_obj.has_next %}
                         <li class="page-item">
                             <a class="page-link" href="?page=
+
 
 
 

@@ -19,13 +19,13 @@
             display: flex;
             flex-direction: column;
         }
-        
+
         .chart-container canvas {
             max-width: 100%;
             height: auto !important;
             margin: auto;
         }
-        
+
         .chart-container h4 {
             margin-bottom: 1.5rem;
             color: #333;
@@ -89,8 +89,8 @@
         <div class="row mb-4">
             <div class="col-md-6">
                 <div class="chart-container">
-                    <h4 class="mb-3">Inventory Trends</h4>
-                    <canvas id="inventoryTrendsChart"></canvas>
+                    <h4 class="mb-3">Orders Status Distribution</h4>
+                    <canvas id="ordersStatusChart"></canvas>
                 </div>
             </div>
             <div class="col-md-6">
@@ -257,8 +257,8 @@
     <script src="{% static 'js/dashboard.js' %}"></script>
     <script>
         const chartData = {
-            inventory_trends_labels: {{ inventory_trends_labels|safe }},
-            inventory_trends_data: {{ inventory_trends_data|safe }},
+            orders_status_labels: {{ orders_status_labels|safe }},
+            orders_status_data: {{ orders_status_data|safe }},
             shipment_status_labels: {{ shipment_status_labels|safe }},
             shipment_status_data: {{ shipment_status_data|safe }},
             monthly_shipments_labels: {{ monthly_shipments_labels|safe }},

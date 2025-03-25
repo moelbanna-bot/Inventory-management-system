@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, DetailView, TemplateView
@@ -81,6 +82,18 @@ class CreateOrderView(LoginRequiredMixin, TemplateView):
                 OrderItem.objects.create(
                     order=order, product=product, quantity=quantity
                 )
+            with transaction.atomic():
+                for item in order.items.all():
+                    product = item.product
+                    if product.current_quantity < item.quantity:
+                        messages.error(
+                            request,
+                            f"Insufficient stock for product {product.name}, it has only {product.current_quantity} available.",
+                        )
+                        order.delete()
+                        return redirect("orders:create-order")
+                    product.current_quantity -= item.quantity
+                    product.save()
 
             messages.success(
                 request, f"Order #{order.reference_number} created successfully!"
@@ -148,6 +161,13 @@ class OrderActionView(LoginRequiredMixin, View):
                 if not request.user.is_staff:
                     messages.error(request, "Only staff members can cancel orders.")
                     return redirect("order-details", ref_num=order.reference_number)
+
+                with transaction.atomic():
+                    for item in order.items.all():
+                        product = item.product
+                        product.current_quantity += item.quantity
+                        product.save()
+
                 order.mark_as_cancelled()
                 messages.success(
                     request,
@@ -209,8 +229,12 @@ class AddSupermarketView(LoginRequiredMixin, View):
                 "orders:supermarkets-list"
             )  # Adjust this to your actual URL name
 
-            messages.success(request, f"Supermarket '{supermarket.name}' added successfully!")
-            return redirect("orders:supermarkets-list")  # Adjust this to your actual URL name
+            messages.success(
+                request, f"Supermarket '{supermarket.name}' added successfully!"
+            )
+            return redirect(
+                "orders:supermarkets-list"
+            )  # Adjust this to your actual URL name
 
         else:
             # Add show_modal flag to indicate we need to reopen the modal
