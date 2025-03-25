@@ -17,5 +17,3 @@ db.sqlite3
 media/
 
 poetry.lock
-
-staticfiles
