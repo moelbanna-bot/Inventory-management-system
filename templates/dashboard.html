@@ -268,6 +268,20 @@
         };
 
         document.addEventListener('DOMContentLoaded', function () {
+            // Initialize all tabs with Bootstrap's tab API
+            const triggerTabList = [].slice.call(document.querySelectorAll('.nav-tabs a'));
+            triggerTabList.forEach(function (triggerEl) {
+                const tabTrigger = new bootstrap.Tab(triggerEl);
+                
+                triggerEl.addEventListener('shown.bs.tab', function (event) {
+                    // Check if this is the reporting tab and trigger window resize to fix chart rendering
+                    if (event.target.getAttribute('href') === '#reporting') {
+                        window.dispatchEvent(new Event('resize'));
+                    }
+                });
+            });
+            
+            // Initialize charts
             initializeDashboardCharts(chartData);
         });
     </script>
