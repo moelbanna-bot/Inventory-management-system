@@ -69,3 +69,17 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 if not (EMAIL_HOST_USER and EMAIL_HOST_PASSWORD):
     logging.warning("Email settings not configured, using console backend")
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+if not DEBUG:  # Ensure media files work in production
+    import mimetypes
+    mimetypes.add_type("image/png", ".png", True)
+    mimetypes.add_type("image/jpeg", ".jpg", True)
+    mimetypes.add_type("image/jpeg", ".jpeg", True)
+    mimetypes.add_type("image/gif", ".gif", True)
+    mimetypes.add_type("image/webp", ".webp", True)
+    mimetypes.add_type("image/svg+xml", ".svg", True)
+    mimetypes.add_type("image/svg+xml", ".svgz", True)
+    mimetypes.add_type("image/tiff", ".tiff", True)
+    mimetypes.add_type("image/tiff", ".tif", True)
+    mimetypes.add_type("image/tiff", ".tiff", True)
+    mimetypes.add_type("image/tiff", ".tif", True)
