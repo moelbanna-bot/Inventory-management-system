@@ -44,6 +44,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Database configuration
+
 database_url = os.environ.get('DATABASE_URL')
 if database_url:
     logging.info(f"Configuring database with DATABASE_URL (masked: {database_url[:15]}...)")
@@ -56,6 +57,7 @@ if database_url:
     }
 else:
     logging.warning("No DATABASE_URL found, using SQLite as fallback")
+    
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
