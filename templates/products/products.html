@@ -52,11 +52,24 @@
                                 <div class="mt-auto">
                                     <div class="d-flex align-items-center mb-3">
                                         <span class="me-2 fw-semibold">Quantity:</span>
-                                        <span class="badge {% if product.is_stock_critical %} bg-warning-subtle text-warning 
-                                            {% elif not product.current_quantity %} bg-danger-subtle text-danger 
-                                            {% else %} bg-success-subtle text-success {% endif %} rounded-pill px-3 py-2">
-                                            {{ product.current_quantity }} items
-                                        </span>
+
+
+                                        {% if product.is_stock_critical %}
+                                            <span class="badge bg-warning-subtle text-warning rounded-pill px-3 py-2">
+                                                <i class="fas fa-exclamation-triangle me-1"></i>
+                                                {{ product.current_quantity }} In Stock
+                                            </span>
+                                        {% elif not product.current_quantity %}
+                                            <span class="badge bg-danger-subtle text-danger rounded-pill px-3 py-2">
+                                                <i class="fas fa-times-circle me-1"></i>Out of Stock
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-success-subtle text-success rounded-pill px-3 py-2">
+                                                <i class="fas fa-check-circle me-1"></i>
+                                                {{ product.current_quantity }} In Stock
+                                            </span>
+                                        {% endif %}
+
                                     </div>
 
                                     <div class="d-flex justify-content-between align-items-center">
