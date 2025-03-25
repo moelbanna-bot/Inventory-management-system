@@ -7,60 +7,37 @@ from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.views import PasswordResetView, LoginView
+from django.utils.crypto import get_random_string
 from .forms import CustomPasswordResetForm
 from .permissions import is_manager
-
-
-def send_activate_email(request, user):
-    protocol = "https" if request.is_secure() else "http"
-    domain = request.get_host()
-    uid = urlsafe_base64_encode(force_bytes(user.pk))
-    token = default_token_generator.make_token(user)
-    print(f"Sending email to: {user.email}")
-    subject = "Welcome to our Inventory"
-    plain_message = (
-        "Welcome to our Inventory! Your account has been successfully created."
-    )
-    html_message = render_to_string(
-        "accounts/emails/welcome.html",
-        {
-            "user": user,
-            "protocol": protocol,
-            "domain": domain,
-            "uid": uid,
-            "token": token,
-        },
-    )
-    from_email = "khaledgafaar211@gmail.com"
-    to_email = user.email
-
-    try:
-        send_mail(
-            subject,
-            plain_message,
-            from_email,
-            [to_email],
-            html_message=html_message,
-            fail_silently=False,
-        )
-    except Exception as e:
-        print(f"Error sending email: {e}")
+from .utils import send_activate_email
 
 
 def register(request):
     if not is_manager(request.user):
         return render(request, "403.html", status=403)
-
+    print("checkpoint 1")
     if request.method == "POST":
         form = UserRegisterForm(request.POST)
+
         if form.is_valid():
             try:
-                user = form.save()
-                send_activate_email(request, user)
+                user = form.save(commit=False)
+
+                # generate a random password
+                random_password = get_random_string(12)
+                # Set the password
+                user.set_password(random_password)
+                # Now save the user
+                user.save()
+
+                # Send activation email with the generated password
+                send_activate_email(request, user, random_password)
+
                 messages.success(request, "Account created successfully")
                 return redirect("home")
             except Exception as e:
-                messages.error(request, "An error occurred")
+                messages.error(request, f"An error occurred: {str(e)}")
 
     else:
         form = UserRegisterForm()
@@ -75,13 +52,13 @@ class CustomPasswordResetView(PasswordResetView):
 
 
 class CustomLoginView(LoginView):
-    template_name = "accounts/login.html"  # Adjust to match your template path
+    template_name = "accounts/login.html"
 
     def dispatch(self, request, *args, **kwargs):
         # If the user is already authenticated, redirect them
         if request.user.is_authenticated:
             # Redirect to your desired URL (home, dashboard, etc.)
-            return redirect("home")  # Change 'home' to your homepage URL name
+            return redirect("home")
 
         # Otherwise, proceed with the normal login view
         return super().dispatch(request, *args, **kwargs)

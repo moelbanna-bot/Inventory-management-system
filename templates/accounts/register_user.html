@@ -25,7 +25,8 @@
                             {% for message in messages %}
                                 <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
                                     {{ message }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                            aria-label="Close"></button>
                                 </div>
                             {% endfor %}
                         {% endif %}
@@ -34,7 +35,8 @@
                                 {% for error in form.non_field_errors %}
                                     {{ error }}
                                 {% endfor %}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
                             </div>
                         {% endif %}
 
@@ -89,43 +91,18 @@
                                     </div>
                                 {% endif %}
                             </div>
-
-                            <div class="mb-3">
-                                <label for="password" class="form-label">Password</label>
-                                {{ form.password1|add_class:"form-control"|attr:"id:password"|attr:"placeholder:Enter your password"|add_error_class:"is-invalid" }}
-                                {% if form.password1.errors %}
-                                    <div class="invalid-feedback">
-                                        {% for error in form.password1.errors %}
-                                            {{ error }}
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="confirm_password" class="form-label">Confirm Password</label>
-                                {{ form.password2|add_class:"form-control"|attr:"id:confirm_password"|attr:"placeholder:Confirm your password"|add_error_class:"is-invalid" }}
-                                {% if form.password2.errors %}
-                                    <div class="invalid-feedback">
-                                        {% for error in form.password2.errors %}
-                                            {{ error }}
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-                            </div>
-
                             {% if user and user.is_superuser %}
-                            <div class="mb-3">
-                                <label for="role" class="form-label">Role</label>
-                                {{ form.role|add_class:"form-select"|attr:"id:role"|attr:"placeholder:Select your role"|add_error_class:"is-invalid" }}
-                                {% if form.role.errors %}
-                                    <div class="invalid-feedback">
-                                        {% for error in form.role.errors %}
-                                            {{ error }}
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-                            </div>
+                                <div class="mb-3">
+                                    <label for="role" class="form-label">Role</label>
+                                    {{ form.role|add_class:"form-select"|attr:"id:role"|attr:"placeholder:Select your role"|add_error_class:"is-invalid" }}
+                                    {% if form.role.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.role.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
                             {% endif %}
 
                             <div class="d-grid mb-3">
