@@ -31,9 +31,10 @@ if not CSRF_TRUSTED_ORIGINS:
     CSRF_TRUSTED_ORIGINS = ['https://*.railway.app']
 
 # Optionally disable HTTPS redirect in certain environments
-SECURE_SSL_REDIRECT = os.environ.get('SECURE_SSL_REDIRECT', 'True').lower() == 'true'
-SESSION_COOKIE_SECURE = SECURE_SSL_REDIRECT
-CSRF_COOKIE_SECURE = SECURE_SSL_REDIRECT
+
+SECURE_SSL_REDIRECT = False  # Set to False to prevent redirect loop
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')  # Add this if behind a proxy
+
 SECURE_BROWSER_XSS_FILTER = True
 
 # Configure static files
