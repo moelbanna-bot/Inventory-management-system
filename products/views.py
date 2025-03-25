@@ -1,9 +1,13 @@
+import json
+
 from django.shortcuts import render, redirect
 from django.views import View
 from django.contrib import messages
 from django.db.models import Q
 from django.views.generic import ListView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+
+from orders.models import Order
 from .models import Product
 from shipments.models import Shipment, Supplier
 from .forms import ProductForm
@@ -147,7 +151,27 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         context["total_suppliers"] = Supplier.objects.count()
 
         context["is_manager"] = self.request.user.is_staff
+        # Get order status distribution
+        order_status_counts = (
+            Order.objects.values("status")
+            .annotate(count=Count("id"))
+            .order_by("status")
+        )
 
+        orders_status_labels = []
+        orders_status_data = []
+        for status in order_status_counts:
+            # Get the display name for the status code
+            status_code = status["status"]
+            status_display = dict(Order.STATUS_ORDER_CHOICES).get(
+                status_code, status_code
+            )
+
+            orders_status_labels.append(status_display)
+            orders_status_data.append(status["count"])
+
+        context["orders_status_labels"] = orders_status_labels
+        context["orders_status_data"] = orders_status_data
         if self.request.user.is_staff:
             context["low_stock_count"] = Product.objects.filter(
                 current_quantity__lte=F("critical_quantity")
@@ -180,11 +204,15 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         status_labels = []
         status_data = []
         for status in shipment_status:
-            status_labels.append(status["status"])
+            status_code = status["status"]
+            status_display = dict(Shipment.STATUS_SHIPMENT_CHOICES).get(
+                status_code, status_code
+            )
+            status_labels.append(status_display)
             status_data.append(status["count"])
 
-        context["shipment_status_labels"] = status_labels
-        context["shipment_status_data"] = status_data
+        context["shipment_status_labels"] = json.dumps(status_labels)
+        context["shipment_status_data"] = json.dumps(status_data)
 
         monthly_shipments = (
             Shipment.objects.annotate(month=TruncMonth("created_at"))
