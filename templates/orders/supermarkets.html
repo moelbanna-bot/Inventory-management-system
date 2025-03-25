@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+<!--loading statics files-->
+{% load static %}
+
+
+<!--title-->
+{% block title %}
+    Supermarkets
+{% endblock %}
+
+
+<!--loading css file-->
+{% block extra_css %}
+    <link href="{% static 'css/supplier.css' %}" rel="stylesheet">
+{% endblock %}
+
+
+<!--main content-->
+{% block content %}
+    <div class="container  mt-5 px-5" style="
+    min-height: 80vh;
+">
+        <h2 class="fw-bold">SuperMarkets</h2>
+        <!--  search bar and add supplier button-->
+        <div class="row mb-3">
+            {% include 'components/search-bar.html' with btn_value="Add market" target_modal="#SupermarketModal" %}
+
+        </div>
+
+
+        <div class="row">
+            {% for target in supermarkets %}
+                {% include 'components/supplier_supermarket_card.html' with target_url="orders:supermarket-detail" %}
+            {% endfor %}
+
+
+            <!-- ِAdd Supplier Modal -->
+            {% include 'orders/supermarket-form-modal.html' %}
+
+        </div>
+
+    </div>
+    {% if is_paginated %}
+        <div class="pagination-wrapper text-center mt-4">
+            {% include 'components/pagination.html' %}
+        </div>
+    {% endif %}
+
+{% endblock %}
+
+
+{% block extra_js %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Make sure Bootstrap is fully loaded before referencing Modal
+            if (typeof bootstrap !== 'undefined') {
+                {% if show_modal %}
+                    var supermarketModal = document.getElementById('SupermarketModal');
+                    if (supermarketModal) {
+                        var modal = new bootstrap.Modal(supermarketModal);
+                        modal.show();
+                    }
+                {% endif %}
+
+                var supermarketModalElement = document.getElementById('supermarketModal');
+                if (supermarketModalElement) {
+                    supermarketModalElement.addEventListener('hidden.bs.modal', function () {
+                        const form = this.querySelector('form');
+                        if (form) form.reset();
+                    });
+                }
+            } else {
+                console.error('Bootstrap is not loaded properly');
+            }
+        });
+    </script>
+{% endblock %}

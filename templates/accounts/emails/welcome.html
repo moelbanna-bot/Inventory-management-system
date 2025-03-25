@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h2>Welcome {{ user.first_name }}!</h2>
+<p>Your account has been successfully created with the following details:</p>
+<ul>
+    <li>Username: {{ user.username }}</li>
+    <li>Email: {{ user.email }}</li>
+    <li>password: {{ password }}</li>
+    <li>Role: {{ user.is_staff|yesno:"Manager,Employee,None" }}</li>
+</ul>
+<p>Please activate your password by clicking this link:
+    <a href="{{ protocol }}://{{ domain }}{% url 'password_reset_confirm' uidb64=uid token=token %}">
+        Activate Password
+    </a>
+</p>
+</body>
+</html>

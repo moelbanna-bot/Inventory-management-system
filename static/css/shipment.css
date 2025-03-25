@@ -1,0 +1,322 @@
+:root {
+    --primary-color: #2f6b62;
+    --secondary-color: #f8f9fa;
+    --text-color: #333;
+    --border-color: #e9ecef;
+    --status-new: #e7f1ff;
+    --status-confirmed: #cfe2ff;
+    --status-shipped: #0d6efd;
+    --status-delivered: #198754;
+    --status-cancelled: #dc3545;
+}
+
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.page-header h1 {
+    font-size: 1.5rem;
+    color: var(--text-color);
+    margin: 0;
+}
+
+.search-container {
+    background: white;
+    padding: 1rem;
+    border-radius: 4px;
+    border: 1px solid #e9ecef;
+}
+
+.search-container .form-control {
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+}
+
+
+.status-filters {
+    display: flex;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.status-filter {
+    background: none;
+    border: none;
+    padding: 0.5rem 0;
+    color: #6c757d;
+    cursor: pointer;
+    position: relative;
+    text-decoration: none;
+}
+
+.status-filter:hover {
+    text-decoration: none;
+    color: #2f6b62;
+}
+
+.status-filter.active {
+    color: #2f6b62;
+    font-weight: 500;
+}
+
+.status-filter.active::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: #2f6b62;
+}
+
+.shipment-card {
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    padding: 1.25rem;
+}
+
+.shipment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.shipment-amount {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #333;
+}
+
+
+.order-card {
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    padding: 1.25rem;
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.order-amount {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #333;
+}
+
+
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+
+.status-PN {
+
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.status-CO {
+
+    background-color: #cce5ff;
+    color: #004085;
+}
+
+.status-SH {
+
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status-DE {
+
+    background-color: #e8f5e9;
+    color: #1b5e20;
+}
+
+.status-CA {
+
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+
+.create-button {
+    background-color: var(--primary-color);
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+}
+
+.create-button:hover {
+    background-color: #265950;
+}
+
+
+.shipment-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.order-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+
+
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.detail-label {
+    color: #6c757d;
+    font-size: 0.875rem;
+}
+
+.form-control {
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.5rem;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(47, 107, 98, 0.25);
+}
+
+
+.table {
+    background: #fff;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.table th {
+    background-color: var(--secondary-color);
+    font-weight: 500;
+    padding: 1rem;
+}
+
+.table td {
+    padding: 1rem;
+    vertical-align: middle;
+}
+
+
+.btn-primary {
+    background-color: #2f6b62;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #265950;
+}
+
+.btn-outline-primary {
+    background-color: transparent;
+    border: 1px solid #2f6b62;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #2f6b62;
+}
+
+.btn-outline-primary:hover {
+    background-color: #2f6b62;
+    color: white;
+}
+
+.btn-action {
+    padding: 6px 12px;
+    font-size: 14px;
+    border-radius: 4px;
+}
+
+.shipments-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.orders-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 2rem;
+    color: #6c757d;
+}
+
+.btn-confirm {
+    background-color: #2f6b62;
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 4px;
+}
+
+.btn-confirm:hover {
+    background-color: #265950;
+    color: white;
+}
+
+.btn-confirm i {
+    margin-right: 8px;
+}
+
+@media (max-width: 768px) {
+    .status-filters {
+        flex-wrap: wrap;
+    }
+
+    .shipment-header {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    .order-header {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}

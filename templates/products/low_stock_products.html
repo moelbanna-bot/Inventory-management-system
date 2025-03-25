@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Low Stock Products {% endblock %}
+
+{% block extra_css %}
+    <link href="{% static 'css/main.css' %}" rel="stylesheet"/>
+    <style>
+        .card {
+            box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px;
+        }
+        
+        .products-container {
+            padding: 1rem 0;
+        }
+        
+        .card-img-wrapper {
+            position: relative;
+            overflow: hidden;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="row align-items-center mb-4">
+            <div class="col">
+                <h2 class="mb-0">Low Stock Products</h2>
+                <p class="text-muted mb-0">Products that are at or below their critical quantity level</p>
+            </div>
+        </div>
+
+        {% if products %}
+            <div class="products-container">
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
+                    {% for product in products %}
+                        <div class="col">
+                            <div class="card h-100 rounded-4 border-0">
+                                {% if product.image %}
+                                    <div class="card-img-wrapper rounded-top-4">
+                                        <img src="{{ product.image.url }}" class="card-img-top"
+                                             style="height: 200px; object-fit: cover;" alt="{{ product.name }}">
+                                    </div>
+                                {% else %}
+                                    <div class="card-img-wrapper rounded-top-4 bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                        <i class="fas fa-image text-muted fa-3x"></i>
+                                    </div>
+                                {% endif %}
+
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title fw-bold mb-2">{{ product.name }}</h5>
+                                    <p class="card-text text-muted mb-3">{{ product.description|truncatechars:100 }}</p>
+                                    
+                                    <div class="mt-auto">
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="w-100">
+                                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                                    <span class="fw-semibold">Current Stock:</span>
+                                                    <span class="badge {% if product.current_quantity == 0 %} bg-danger-subtle text-danger 
+                                                        {% else %} bg-warning-subtle text-warning {% endif %} rounded-pill px-3 py-2">
+                                                        {{ product.current_quantity }} units
+                                                    </span>
+                                                </div>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <span class="fw-semibold">Critical Level:</span>
+                                                    <span class="badge bg-secondary-subtle text-secondary rounded-pill px-3 py-2">
+                                                        {{ product.critical_quantity }} units
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <small class="text-muted">
+                                                <i class="fas fa-clock me-1"></i>
+                                                {{ product.created_at|date:"M d, Y" }}
+                                            </small>
+                                            <div class="btn-group">
+                                                <a href="{% url 'edit_product' product.slug %}"
+                                                   class="btn button-primary btn-sm">
+                                                   <i class="fas fa-edit me-1"></i>Edit
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% else %}
+            <div class="alert alert-info" role="alert">
+                <i class="fas fa-info-circle me-2"></i>
+                No products are currently at or below their critical stock level.
+            </div>
+        {% endif %}
+
+        <div class="pagination-wrapper text-center mt-4">
+            {% include 'components/pagination.html' %}
+        </div>
+    </div>
+{% endblock %} 

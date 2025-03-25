@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% load static %}
+
+{#title #}
+{% block title %}
+    Register User
+{% endblock %}
+
+{#add css file#}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <link rel="stylesheet" href="{% static 'accounts/css/main.css' %}">
+{% endblock %}
+
+{#main content#}
+{% block content %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-6">
+                <div class="card shadow my-5">
+                    <div class="card-body p-4">
+                        <h2 class="text-center mb-4">Register New User</h2>
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                            aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                {% for error in form.non_field_errors %}
+                                    {{ error }}
+                                {% endfor %}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
+                            </div>
+                        {% endif %}
+
+                        <form method="post">
+                            {% csrf_token %}
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="f_name" class="form-label">First Name</label>
+                                    {{ form.first_name|add_class:"form-control"|attr:"id:f_name"|attr:"placeholder:Enter your first name"|add_error_class:"is-invalid" }}
+                                    {% if form.first_name.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.first_name.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="l_name" class="form-label">Last Name</label>
+                                    {{ form.last_name|add_class:"form-control"|attr:"id:l_name"|attr:"placeholder:Enter your last name"|add_error_class:"is-invalid" }}
+                                    {% if form.last_name.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.last_name.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Username</label>
+                                {{ form.username|add_class:"form-control"|attr:"id:username"|attr:"placeholder:Enter your username"|add_error_class:"is-invalid" }}
+                                {% if form.username.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.username.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                {{ form.email|add_class:"form-control"|attr:"id:email"|attr:"placeholder:Enter your email"|add_error_class:"is-invalid" }}
+                                {% if form.email.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.email.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            {% if user and user.is_superuser %}
+                                <div class="mb-3">
+                                    <label for="role" class="form-label">Role</label>
+                                    {{ form.role|add_class:"form-select"|attr:"id:role"|attr:"placeholder:Select your role"|add_error_class:"is-invalid" }}
+                                    {% if form.role.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.role.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+
+                            <div class="d-grid mb-3">
+                                <button class="btn btn-primary" type="submit">Register</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

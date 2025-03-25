@@ -15,3 +15,7 @@ db.sqlite3
 .idea/
 
 media/
+
+poetry.lock
+
+staticfiles

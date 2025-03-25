@@ -1,0 +1,24 @@
+{% load static %}
+<div class="row d-flex justify-content-center align-items-center">
+    <div class="col-12 col-md-9 mb-3 mb-md-0 col-xl-10">
+        <form method="GET" class="">
+            <div class="input-group" id="search-bar">
+                <input type="text" class="form-control rounded-start-3" name="search"
+                       placeholder="Search ..."
+                >
+            </div>
+        </form>
+    </div>
+    {% if user.is_authenticated and user.is_staff %}
+        <div class="col-12 col-md-3 col-xl-2">
+            <!-- params: btn_value="Button Name", target_modal="#ModalID", action_url:str -->
+            <button class="button-primary w-100 " type="button"
+                    {% if target_modal %}
+                    data-bs-toggle="modal"
+                        data-bs-target={{ target_modal }}
+                    {% endif %} >
+                {{ btn_value|default:"Search" }}
+            </button>
+        </div>
+    {% endif %}
+</div>
