@@ -225,10 +225,10 @@ class LowStockProductsView(LoginRequiredMixin, ListView):
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_staff:
             messages.error(request, "You don't have permission to access this page.")
-            return redirect('dashboard')
+            return redirect("dashboard")
         return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         return Product.objects.filter(
-            current_quantity__lte=F('critical_quantity')
-        ).order_by('current_quantity')
+            current_quantity__lte=F("critical_quantity")
+        ).order_by("current_quantity")

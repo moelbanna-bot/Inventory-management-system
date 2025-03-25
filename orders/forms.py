@@ -1,16 +1,17 @@
 from django.forms import ModelForm, RegexField
-from .models import Supermarket
+from .models import Supermarket, Order
 from django.core.exceptions import ValidationError
+from django import forms
 
 
 class SupermarketForm(ModelForm):
     # Egyptian phone numbers starting with 010,011,012 or 015, followed by a 8-digit number
     phone = RegexField(
-        regex=r'^01[0-2,5]\d{8}$',
+        regex=r"^01[0-2,5]\d{8}$",
         error_messages={
-            'invalid': "Please enter a valid Egyptian phone number (e.g., 01xxxxxxxxx)."
+            "invalid": "Please enter a valid Egyptian phone number (e.g., 01xxxxxxxxx)."
         },
-        required=True
+        required=True,
     )
 
     class Meta:
@@ -35,7 +36,7 @@ class SupermarketForm(ModelForm):
         }
 
     def clean_name(self):
-        name = self.cleaned_data.get('name')
+        name = self.cleaned_data.get("name")
 
         # Only check uniqueness for new suppliers
         if not self.instance.pk and Supermarket.objects.filter(name=name).exists():
@@ -44,7 +45,7 @@ class SupermarketForm(ModelForm):
         return name
 
     def clean_email(self):
-        email = self.cleaned_data.get('email')
+        email = self.cleaned_data.get("email")
 
         # Only check uniqueness for new suppliers
         if not self.instance.pk and Supermarket.objects.filter(email=email).exists():
@@ -60,3 +61,16 @@ class SupermarketForm(ModelForm):
             raise ValidationError("A supplier with this phone number already exists.")
 
         return phone
+
+
+class OrderForm(ModelForm):
+    class Meta:
+        model = Order
+        fields = ["supermarket", "status", "access_date"]
+        widgets = {
+            "supermarket": forms.Select(attrs={"class": "form-select"}),
+            "status": forms.Select(attrs={"class": "form-select"}),
+            "access_date": forms.DateInput(
+                attrs={"class": "form-control", "type": "date"}
+            ),
+        }

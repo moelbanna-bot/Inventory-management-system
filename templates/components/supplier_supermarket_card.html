@@ -3,36 +3,36 @@
         <a class="text-decoration-none " href="{% url target_url id=target.pk %}" role="button">
             <div class="card-body ">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="card-title fw-bold mb-0 text-capitalize text-black">{{target.name}}</h5>
-                    <span class="badge rounded-pill {% if target.is_active %}bg-success{% else %}bg-danger{% endif %}">
+                    <h5 class="card-title fw-bold mb-0 text-capitalize text-black">{{ target.name }}</h5>
+                    <span class="badge rounded-pill {% if target.is_active %}text-success bg-success-subtle{% else %}text-danger bg-danger-subtle{% endif %}">
                         {% if target.is_active %}Active{% else %}Inactive{% endif %}
                     </span>
                 </div>
                 <h6 class="card-subtitle mb-3 text-body-secondary "><i
-                        class="fa-regular fa-envelope col-1"></i> <span class="col-11">{{target.email}}</span></h6>
+                        class="fa-regular fa-envelope col-1"></i> <span class="col-11">{{ target.email }}</span></h6>
                 <h6 class="card-subtitle mb-3 text-body-secondary ">
-                    <i class="fa-solid fa-phone col-1"></i> <span class="col-11">{{target.phone}}</span></h6>
+                    <i class="fa-solid fa-phone col-1"></i> <span class="col-11">{{ target.phone }}</span></h6>
                 <h6 class="card-subtitle mb-3 text-body-secondary text-truncate">
                     <i class="fa-solid fa-location-dot col-1"></i>
-                    <span class="col-11">{{target.address}}</span>
+                    <span class="col-11">{{ target.address }}</span>
                 </h6>
                 {% if type == "supplier" %}
-                <h6 class="card-subtitle text-body-secondary me-2 "><i
-                        class="fa-solid fa-truck col-1"></i>
-                    <span class="col-7">Purchase shipments</span>
-                    <span class="badge text-body-secondary rounded-pill " style="background-color: #448886">
-                        {{target.total_purchase_shipments}}
+                    <h6 class="card-subtitle text-body-secondary me-2 "><i
+                            class="fa-solid fa-truck col-1"></i>
+                        <span class="col-7">Purchase shipments</span>
+                        <span class="badge text-success bg-success-subtle rounded-pill">
+                        {{ target.total_purchase_shipments }}
                     </span>
-                </h6>
+                    </h6>
 
                 {% else %}
-                <h6 class="card-subtitle my-0 text-body-secondary me-2"><i
-                        class="fa-solid fa-cart-shopping col-1"></i>
-                    <span class="col-7">Purchase orders</span>
-                    <span class="badge text-body-secondary rounded-pill" style="background-color: #448886">
-                            {{target.total_purchase_orders}}
+                    <h6 class="card-subtitle my-0 text-body-secondary me-2"><i
+                            class="fa-solid fa-cart-shopping col-1"></i>
+                        <span class="col-7">Purchase orders</span>
+                        <span class="badge text-success bg-success-subtle rounded-pill">
+                            {{ target.total_purchase_orders }}
                         </span>
-                </h6>
+                    </h6>
                 {% endif %}
 
             </div>

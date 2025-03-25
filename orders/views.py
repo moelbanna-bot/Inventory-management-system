@@ -1,194 +1,167 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
-from django.utils import timezone
-from django.views.decorators.http import require_POST
-from django.views.generic import ListView, View, TemplateView
-from django.views.generic import ListView, CreateView, View, DetailView
-from django.http import JsonResponse
-from django.urls import reverse
+from django.views.generic import ListView, DetailView, TemplateView
 from django.contrib import messages
-
-
-import json
 from django.views import View
 from django.db.models import Count
-from .forms import SupermarketForm
-from .models import Supermarket, Order
+from .forms import SupermarketForm, OrderForm
 from django.db.models import Sum
 from orders.models import Order, Supermarket, OrderItem
 from products.models import Product
 
 
-class OrderListView(ListView):
+# order views
+class OrdersListView(LoginRequiredMixin, ListView):
     model = Order
     template_name = "orders/orders.html"
-    paginate_by = 8
     context_object_name = "orders"
     ordering = ["-created_at"]
+    login_url = "login"
+    paginate_by = 6
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        search_query = self.request.GET.get("search")
+        status_filter = self.request.GET.get("status")
+
+        if search_query:
+            queryset = queryset.filter(
+                Q(reference_number__icontains=search_query)
+                | Q(supermarket__name__icontains=search_query)
+            )
+
+        if status_filter:
+            queryset = queryset.filter(status=status_filter)
+
+        return queryset.select_related("supermarket", "created_by")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["current_page"] = self.request.GET.get("page", 1)
+        context["status_choices"] = Order.STATUS_ORDER_CHOICES
+        return context
+
+
+class CreateOrderView(LoginRequiredMixin, TemplateView):
+    template_name = "orders/create_order.html"
     login_url = "login"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["supermarkets"] = Supermarket.objects.all()
+        context["supermarkets"] = Supermarket.objects.filter(is_active=True)
+        context["products"] = Product.objects.all()
+        context["form"] = OrderForm()
         return context
 
-    def get_queryset(self):
-        try:
-            query_set = super().get_queryset()
-            search_query = self.request.GET.get("search")
-
-            if search_query:
-                query_set = query_set.filter(
-                    Q(reference_number__icontains=search_query)
-                    | Q(supermarket__name__icontains=search_query)
-                    | Q(supermarket__email__icontains=search_query)
-                )
-
-            return query_set
-        except Exception as e:
-            print(f"Error filtering Orders: {e}")
-            return Order.objects.none()
-
-
-class CreateOrderView(View):
     def post(self, request, *args, **kwargs):
-        supermarket_id = request.POST.get("supermarket_id")
-        if not supermarket_id:
-            messages.error(request, "Please select a supermarket.")
-            return redirect("orders:orders-list")
+        try:
+            data = request.POST
+            supermarket_id = data.get("supermarket")
+            products = data.getlist("product[]")
+            quantities = data.getlist("quantity[]")
+            access_date = data.get("access_date")
 
-        supermarket = Supermarket.objects.get(id=supermarket_id)
-        with transaction.atomic():
+            if not supermarket_id or not products or not quantities or not access_date:
+                messages.error(request, "Please provide all required information")
+                return redirect("orders:create-order")
+
+            supermarket = Supermarket.objects.get(id=supermarket_id)
+
+            # Create order with generated reference number
             order = Order.objects.create(
                 supermarket=supermarket,
+                status="PN",
                 created_by=request.user,
-                access_date=timezone.now(),
+                access_date=access_date,
             )
-            request.session["order_id"] = order.id
-            return redirect(reverse("orders:add_order", kwargs={"pk": order.id}))
+
+            for product_id, quantity in zip(products, quantities):
+                product = Product.objects.get(id=product_id)
+                OrderItem.objects.create(
+                    order=order, product=product, quantity=quantity
+                )
+
+            messages.success(
+                request, f"Order #{order.reference_number} created successfully!"
+            )
+            return redirect("orders:orders-list")
+
+        except Exception as e:
+            messages.error(request, f"Error creating order: {str(e)}")
+            return redirect("orders:create-order")
 
 
-class AddOrderView(TemplateView):
-    template_name = "orders/add-order.html"
+class OrderDetailView(LoginRequiredMixin, DetailView):
+    model = Order
+    template_name = "orders/order_details.html"
+    context_object_name = "order"
+    login_url = "login"
+    slug_field = "reference_number"
+    slug_url_kwarg = "ref_num"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        order = get_object_or_404(Order, id=self.kwargs["pk"])
-        context["order"] = order
-        context["order_items"] = order.items.all()
-        context["products"] = Product.objects.all()
-        return context
+        order = self.object
 
-    def post(self, request, *args, **kwargs):
-        order = get_object_or_404(Order, id=self.kwargs["pk"])
-        product_id = request.POST.get("product")
-        quantity = request.POST.get("quantity")
-
-        if product_id and quantity:
-            product = get_object_or_404(Product, id=product_id)
-            OrderItem.objects.create(order=order, product=product, quantity=quantity)
-            messages.success(request, "Product added successfully.")
-        else:
-            messages.error(request, "Please select a product and quantity.")
-
-        return redirect(reverse("orders:add_order", kwargs={"pk": order.id}))
-
-
-class PlaceOrderView(View):
-    def post(self, request, *args, **kwargs):
-        order_id = request.session.get("order_id")
-        if not order_id:
-            messages.error(request, "No order found.")
-            return redirect("orders:orders-list")
-
-        order = get_object_or_404(Order, id=order_id)
-        if order.items.count() == 0:
-            order.delete()
-            messages.error(request, "Order cancelled as no items were added.")
-            return redirect("orders:orders-list")
-        order.save()
-        messages.success(request, "Order placed successfully.")
-        return redirect("orders:orders-list")
-
-
-@require_POST
-def cancel_order(request):
-    order_id = request.session.get("order_id")
-    if not order_id:
-        messages.error(request, "No order found.")
-        return redirect("orders:orders-list")
-
-    order = get_object_or_404(Order, id=order_id)
-    order.delete()
-    messages.success(request, "Order cancelled successfully.")
-    return redirect("orders:orders-list")
-
-
-from django.views.decorators.http import require_POST
-from django.http import HttpResponseRedirect
-
-
-@require_POST
-def delete_order_item(request, pk):
-    order_item = get_object_or_404(OrderItem, pk=pk)
-    order_id = order_item.order.id
-    order_item.delete()
-    messages.success(request, "Order item deleted successfully.")
-    return HttpResponseRedirect(reverse("orders:add_order", kwargs={"pk": order_id}))
-
-
-class EditOrderItemView(View):
-    def post(self, request, pk, *args, **kwargs):
-        order_item = get_object_or_404(OrderItem, pk=pk)
-        quantity = request.POST.get("quantity")
-
-        if quantity:
-            order_item.quantity = quantity
-            order_item.save()
-            messages.success(request, "Order item updated successfully.")
-        else:
-            messages.error(request, "Please enter a valid quantity.")
-
-        return HttpResponseRedirect(
-            reverse("orders:add_order", kwargs={"pk": order_item.order.id})
-        )
-
-
-class OrderDetailView(LoginRequiredMixin, TemplateView):
-    template_name = "orders/add-order.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        order = get_object_or_404(
-            Order, reference_number=self.kwargs["reference_number"]
-        )
-        context["order"] = order
-        context["order_items"] = order.items.all()
+        context["can_confirm"] = order.status == Order.PENDING
+        context["can_ship"] = order.status == Order.CONFIRMED
+        context["can_deliver"] = order.status == Order.SHIPPED
+        # Only show cancel option if user is staff and order status is pending or confirmed
+        context["can_cancel"] = self.request.user.is_staff and order.status in [
+            Order.PENDING,
+            Order.CONFIRMED,
+        ]
         return context
 
 
-class OrderStatusUpdateView(LoginRequiredMixin, View):
-    def post(self, request, *args, **kwargs):
-        order_reference_number = self.kwargs["reference_number"]
-        order = get_object_or_404(Order, reference_number=order_reference_number)
+class OrderActionView(LoginRequiredMixin, View):
+    def post(self, request, ref_num, action):
+        order = get_object_or_404(Order, reference_number=ref_num)
 
-        if "confirm" in request.POST:
-            order.mark_as_confirmed(request.user)
-            messages.success(request, "Order confirmed successfully.")
-        elif "update" in request.POST:
-            new_status = request.POST.get("order_status_dropdown")
-            print("##### newStatus#####", new_status)
-            if new_status in ["confirmed", "shipped", "delivered", "cancelled"]:
-                order.status = new_status
-                order.save()
-                messages.success(request, f"Order status updated to {new_status}.")
+        try:
+            if action == "confirm" and order.status == Order.PENDING:
+                if not request.user.is_staff:
+                    messages.error(request, "Only staff members can confirm orders.")
+                    return redirect("order-details", ref_num=order.reference_number)
+                order.mark_as_confirmed(request.user)
+                messages.success(
+                    request,
+                    f"Order #{order.reference_number} has been confirmed.",
+                )
+            elif action == "ship" and order.status == Order.CONFIRMED:
+                order.mark_as_shipped()
+                messages.success(
+                    request,
+                    f"Order #{order.reference_number} has been marked as shipped.",
+                )
+            elif action == "deliver" and order.status == Order.SHIPPED:
+                order.mark_as_delivered()
+                messages.success(
+                    request,
+                    f"Order #{order.reference_number} has been marked as delivered.",
+                )
+            elif action == "cancel" and order.status in [
+                Order.PENDING,
+                Order.CONFIRMED,
+            ]:
+                if not request.user.is_staff:
+                    messages.error(request, "Only staff members can cancel orders.")
+                    return redirect("order-details", ref_num=order.reference_number)
+                order.mark_as_cancelled()
+                messages.success(
+                    request,
+                    f"Order #{order.reference_number} has been cancelled.",
+                )
             else:
-                messages.error(request, "Invalid status selected.")
+                messages.error(request, "Invalid action for current order status.")
+        except Exception as e:
+            messages.error(request, f"Error updating order: {str(e)}")
 
-        return redirect("orders:order_details", reference_number=order_reference_number)
+        return redirect("orders:order-details", ref_num=order.reference_number)
 
 
+# supermarket views
 class SupermarketListView(LoginRequiredMixin, ListView):
     model = Supermarket
     template_name = "orders/supermarkets.html"
@@ -232,7 +205,13 @@ class AddSupermarketView(LoginRequiredMixin, View):
             messages.success(
                 request, f"Supermarket '{supermarket.name}' added successfully!"
             )
-            return redirect("supermarkets-list")  # Adjust this to your actual URL name
+            return redirect(
+                "orders:supermarkets-list"
+            )  # Adjust this to your actual URL name
+
+            messages.success(request, f"Supermarket '{supermarket.name}' added successfully!")
+            return redirect("orders:supermarkets-list")  # Adjust this to your actual URL name
+
         else:
             # Add show_modal flag to indicate we need to reopen the modal
             supermarkets = Supermarket.objects.all()
@@ -311,4 +290,4 @@ class SupermarketDetailView(LoginRequiredMixin, DetailView):
                 return self.render_to_response(context)
 
         # Redirect back to the same page
-        return redirect("supermarket-detail", id=supermarket.id)
+        return redirect("orders:supermarket-detail", id=supermarket.id)

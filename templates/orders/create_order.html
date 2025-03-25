@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Create Order{% endblock %}
+
+{% block extra_css %}
+    <link href="{% static 'css/shipment.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid py-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0">Create New Order</h1>
+            <a href="{% url 'orders:orders-list' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Back to Orders
+            </a>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <form method="post" id="orderForm">
+                            {% csrf_token %}
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="supermarket" class="form-label">Supermarket</label>
+                                        <select name="supermarket" id="supermarket" class="form-select" required>
+                                            <option value="">Select a supermarket</option>
+                                            {% for supermarket in supermarkets %}
+                                                <option value="{{ supermarket.id }}">{{ supermarket.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="access_date" class="form-label">Expected Delivery Date</label>
+                                        <input type="date" name="access_date" id="access_date" class="form-control"
+                                               required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <h5 class="mb-3">Products</h5>
+                                <div id="productRows">
+                                    <div class="row mb-3 product-row">
+                                        <div class="col-md-6">
+                                            <select name="product[]" class="form-select product-select" required>
+                                                <option value="">Select a product</option>
+                                                {% for product in products %}
+                                                    <option value="{{ product.id }}">{{ product.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input type="number" name="quantity[]" class="form-control quantity-input"
+                                                   placeholder="Quantity" min="1" required>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-danger remove-product"
+                                                    style="display: none;">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-outline-primary" id="addProduct">
+                                    <i class="fas fa-plus me-2"></i>Add Product
+                                </button>
+                            </div>
+
+                            <div class="d-flex justify-content-end">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>Create Order
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const productRows = document.getElementById('productRows');
+            const addProductBtn = document.getElementById('addProduct');
+            const form = document.getElementById('orderForm');
+
+            // Set minimum date for access_date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('access_date').min = today;
+
+            function createProductRow() {
+                const row = document.createElement('div');
+                row.className = 'row mb-3 product-row';
+                row.innerHTML = `
+                    <div class="col-md-6">
+                        <select name="product[]" class="form-select product-select" required>
+                            <option value="">Select a product</option>
+                            {% for product in products %}
+                                <option value="{{ product.id }}">{{ product.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="number" name="quantity[]" class="form-control quantity-input"
+                               placeholder="Quantity" min="1" required>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-danger remove-product">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                return row;
+            }
+
+            addProductBtn.addEventListener('click', function () {
+                const newRow = createProductRow();
+                productRows.appendChild(newRow);
+                updateRemoveButtons();
+            });
+
+            productRows.addEventListener('click', function (e) {
+                if (e.target.closest('.remove-product')) {
+                    const row = e.target.closest('.product-row');
+                    if (productRows.children.length > 1) {
+                        row.remove();
+                        updateRemoveButtons();
+                    }
+                }
+            });
+
+            // Show/hide remove buttons based on number of rows
+            function updateRemoveButtons() {
+                const rows = productRows.getElementsByClassName('product-row');
+                const removeButtons = productRows.getElementsByClassName('remove-product');
+                for (let button of removeButtons) {
+                    button.style.display = rows.length > 1 ? 'block' : 'none';
+                }
+            }
+
+            // Initial update of remove buttons
+            updateRemoveButtons();
+
+            // Form validation
+            form.addEventListener('submit', function (e) {
+                const supermarket = document.getElementById('supermarket').value;
+                const accessDate = document.getElementById('access_date').value;
+                const products = document.getElementsByClassName('product-select');
+                const quantities = document.getElementsByClassName('quantity-input');
+
+                if (!supermarket) {
+                    e.preventDefault();
+                    alert('Please select a supermarket');
+                    return;
+                }
+
+                if (!accessDate) {
+                    e.preventDefault();
+                    alert('Please select an expected delivery date');
+                    return;
+                }
+
+                for (let i = 0; i < products.length; i++) {
+                    if (!products[i].value || !quantities[i].value) {
+                        e.preventDefault();
+                        alert('Please fill in all product fields');
+                        return;
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}

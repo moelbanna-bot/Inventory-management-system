@@ -6,43 +6,45 @@
 
 <!--title-->
 {% block title %}
-Suppliers
+    Suppliers
 {% endblock %}
 
 
 <!--loading css file-->
 {% block extra_css %}
-<link href="{% static 'css/supplier.css' %}" rel="stylesheet">
+    <link href="{% static 'css/supplier.css' %}" rel="stylesheet">
 {% endblock %}
 
 
 <!--main content-->
 {% block content %}
-<div class="container  mt-5 px-5">
-    <h2 class="fw-bold">Suppliers</h2>
-    <!--  search bar and add supplier button-->
-    <div class="row mb-3">
-        {% include 'components/search-bar.html' with btn_value="Add supplier" target_modal="#SupplierModal" %}
+    <div class="container  mt-5 px-5">
+        <h2 class="fw-bold">Suppliers</h2>
+        <!--  search bar and add supplier button-->
+        <div class="row mb-3">
+            {% include 'components/search-bar.html' with btn_value="Add supplier" target_modal="#SupplierModal" %}
+
+        </div>
+
+        <!--  supplier list-->
+        <div class="row">
+            {% for target in suppliers %}
+                {% include 'components/supplier_supermarket_card.html' with target_url="supplier-detail" %}
+            {% endfor %}
+
+
+            <!-- ِAdd Supplier Modal -->
+            {% include 'shipments/supplier-form-modal.html' %}
+
+        </div>
 
     </div>
 
-    <!--  supplier list-->
-    <div class="row">
-        {% for target in suppliers %}
-        {% include 'components/supplier_supermarket_card.html' with target_url="supplier-detail" %}
-        {% endfor %}
-
-
-        <!-- ِAdd Supplier Modal -->
-        {% include 'shipments/supplier-form-modal.html' %}
-
-    </div>
-
-</div>
-
-<div class="pagination-wrapper text-center mt-4">
-    {% include 'components/pagination.html' %}
-</div>
+    {% if is_paginated %}
+        <div class="pagination-wrapper text-center mt-4">
+            {% include 'components/pagination.html' %}
+        </div>
+    {% endif %}
 {% endblock %}
 
 

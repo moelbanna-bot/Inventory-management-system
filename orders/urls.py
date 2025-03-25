@@ -1,47 +1,32 @@
 from django.urls import path
 
 from .views import (
-    OrderListView,
+    OrdersListView,
     CreateOrderView,
-    AddOrderView,
-    PlaceOrderView,
-    cancel_order,
-    delete_order_item,
-    EditOrderItemView,
     OrderDetailView,
-    OrderStatusUpdateView,
     SupermarketListView,
     AddSupermarketView,
-    SupermarketDetailView
+    SupermarketDetailView,
+    OrderActionView,
 )
 
 app_name = "orders"
 urlpatterns = [
-    path("", OrderListView.as_view(), name="orders-list"),
-    path("create/", CreateOrderView.as_view(), name="create_order"),
-    path("list-supermarket/", SupermarketListView.as_view(), name="supermarkets-list"),
+    # supermarkets routes
+    path("supermarkets/", SupermarketListView.as_view(), name="supermarkets-list"),
     path("supermarket/", AddSupermarketView.as_view(), name="add-supermarket"),
-    path('supermarket/<int:id>/', SupermarketDetailView.as_view(), name='supermarket-detail'),
-    path("create-order/", CreateOrderView.as_view(), name="create_order"),
-    path("add-order/<int:pk>/", AddOrderView.as_view(), name="add_order"),
-    path("place-order/", PlaceOrderView.as_view(), name="place_order"),
-    path("cancel-order/", cancel_order, name="cancel_order"),
     path(
-        "delete-order-item/<int:pk>/",
-        delete_order_item,
-        name="delete_order_item",
+        "supermarket/<int:id>/",
+        SupermarketDetailView.as_view(),
+        name="supermarket-detail",
     ),
+    # orders routes
+    path("", OrdersListView.as_view(), name="orders-list"),
+    path("create/", CreateOrderView.as_view(), name="create-order"),
+    path("<str:ref_num>/", OrderDetailView.as_view(), name="order-details"),
     path(
-        "edit-order-item/<int:pk>/", EditOrderItemView.as_view(), name="edit_order_item"
-    ),
-    path(
-        "order-details/<str:reference_number>/",
-        OrderDetailView.as_view(),
-        name="order_details",
-    ),
-    path(
-        "order-status-update/<str:reference_number>/",
-        OrderStatusUpdateView.as_view(),
-        name="update-status",
+        "<str:ref_num>/action/<str:action>/",
+        OrderActionView.as_view(),
+        name="order-action",
     ),
 ]
