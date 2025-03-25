@@ -20,7 +20,7 @@
     </style>
 {% endblock %}
 {% block content %}
-    <div class="container mt-5">
+    <div class="container mt-5 p-5">
         <div class="row">
             {% include 'components/search-bar.html' with target_modal="#productModal" btn_value="Add Product" %}
         </div>
@@ -81,9 +81,11 @@
             </div>
         </div>
 
-        <div class="pagination-wrapper text-center mt-4">
-            {% include 'components/pagination.html' %}
-        </div>
+        {% if is_paginated %}
+            <div class="pagination-wrapper text-center mt-4">
+                {% include 'components/pagination.html' %}
+            </div>
+        {% endif %}
     </div>
     {% include 'product-form-modal.html' %}
 {% endblock %}

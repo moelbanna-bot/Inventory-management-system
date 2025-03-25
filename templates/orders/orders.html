@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container-fluid py-4">
+    <div class="container p-5">
         <div class="page-header">
             <h1>Orders</h1>
             <a href="{% url 'orders:create-order' %}" class="btn btn-primary">Create order</a>
@@ -28,7 +28,8 @@
 
         <!-- Status Filters -->
         <div class="status-filters">
-            <a href="" class="status-filter {% if not request.GET.status %}active{% endif %}">
+            <a href="{% url 'orders:orders-list' %}"
+               class="status-filter {% if not request.GET.status %}active{% endif %}">
                 All
             </a>
             {% for status, label in status_choices %}
@@ -90,6 +91,16 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
                                     {{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">
                                 Previous
                             </a>
@@ -110,6 +121,16 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
                                         {{ num }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">
                                     {{ num }}
                                 </a>
@@ -120,6 +141,16 @@
                     {% if page_obj.has_next %}
                         <li class="page-item">
                             <a class="page-link" href="?page=
+
+
+
+
+
+
+
+
+
+
 
 
 

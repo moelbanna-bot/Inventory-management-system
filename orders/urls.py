@@ -12,6 +12,15 @@ from .views import (
 
 app_name = "orders"
 urlpatterns = [
+    # supermarkets routes
+    path("supermarkets/", SupermarketListView.as_view(), name="supermarkets-list"),
+    path("supermarket/", AddSupermarketView.as_view(), name="add-supermarket"),
+    path(
+        "supermarket/<int:id>/",
+        SupermarketDetailView.as_view(),
+        name="supermarket-detail",
+    ),
+    # orders routes
     path("", OrdersListView.as_view(), name="orders-list"),
     path("create/", CreateOrderView.as_view(), name="create-order"),
     path("<str:ref_num>/", OrderDetailView.as_view(), name="order-details"),
@@ -19,12 +28,5 @@ urlpatterns = [
         "<str:ref_num>/action/<str:action>/",
         OrderActionView.as_view(),
         name="order-action",
-    ),
-    path("list-supermarket/", SupermarketListView.as_view(), name="supermarkets-list"),
-    path("supermarket/", AddSupermarketView.as_view(), name="add-supermarket"),
-    path(
-        "supermarket/<int:id>/",
-        SupermarketDetailView.as_view(),
-        name="supermarket-detail",
     ),
 ]
