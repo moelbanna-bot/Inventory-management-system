@@ -87,3 +87,7 @@ if not DEBUG:  # Ensure media files work in production
     mimetypes.add_type("image/tiff", ".tif", True)
     mimetypes.add_type("image/tiff", ".tiff", True)
     mimetypes.add_type("image/tiff", ".tif", True)
+    
+    
+USE_TZ = True
+TIME_ZONE = "UTC"  # Or your preferred timezone
