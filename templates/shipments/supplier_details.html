@@ -12,7 +12,6 @@
 <!--loading css file-->
 {% block extra_css %}
     <link href="{% static 'css/supplier_details.css' %}" rel="stylesheet">
-    <link href="{% static 'css/mobile_responsive.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -95,9 +94,9 @@
                     <!-- Header Row -->
                     <div class="header bg-light">
                         <div class="col">Purchase Order ID</div>
-                        <div class="col d-none d-md-block">Order Due Date</div>
+                        <div class="col">Order Due Date</div>
                         <div class="col">Status</div>
-                        <div class="col d-none d-md-block">Item Count</div>
+                        <div class="col">Item Count</div>
                     </div>
 
                     <div class="data-wrapper">
@@ -112,27 +111,19 @@
                             <div class="raw-data">
                                 {% for order in purchase_orders %}
                                     <div class="row-data">
+                                        <div class="col">{{ order.id }}</div>
+                                        <div class="col">{{ order.due_date }}</div>
                                         <div class="col">
-                                            <span>{{ order.id }}</span>
-                                            <div class="d-md-none small text-muted mt-1">
-                                                Items: {{ order.item_count }}
-                                            </div>
+                                    <span class="badge
+                                        {% if order.status == 'Received' %}bg-success
+                                        {% elif order.status == 'Pending' %}bg-warning
+                                        {% elif order.status == 'Shipped' %}bg-info
+                                        {% else %}bg-secondary
+                                        {% endif %}">
+                                        {{ order.status }}
+                                    </span>
                                         </div>
-                                        <div class="col d-none d-md-block">{{ order.due_date }}</div>
-                                        <div class="col">
-                                            <span class="badge
-                                                {% if order.status == 'Received' %}bg-success
-                                                {% elif order.status == 'Pending' %}bg-warning
-                                                {% elif order.status == 'Shipped' %}bg-info
-                                                {% else %}bg-secondary
-                                                {% endif %}">
-                                                {{ order.status }}
-                                            </span>
-                                            <div class="d-md-none small text-muted mt-1">
-                                                Due: {{ order.due_date|date:"M d, Y" }}
-                                            </div>
-                                        </div>
-                                        <div class="col d-none d-md-block">{{ order.item_count }}</div>
+                                        <div class="col">{{ order.item_count }}</div>
                                     </div>
                                 {% endfor %}
                             </div>

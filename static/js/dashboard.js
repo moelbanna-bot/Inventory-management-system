@@ -9,7 +9,7 @@ Chart.defaults.plugins.legend.labels.pointStyle = "circle";
 const commonOptions = {
   responsive: true,
   maintainAspectRatio: true,
-  aspectRatio: window.innerWidth < 768 ? 1 : 2,
+  aspectRatio: 2,
   plugins: {
     legend: {
       display: true,
@@ -18,16 +18,15 @@ const commonOptions = {
         usePointStyle: true,
         pointStyle: "circle",
         font: {
-          size: window.innerWidth < 768 ? 9 : 11,
+          size: 11,
         },
       },
-      position: window.innerWidth < 768 ? "bottom" : "top",
     },
     tooltip: {
       backgroundColor: "rgba(0, 0, 0, 0.8)",
       padding: 10,
-      titleFont: { size: window.innerWidth < 768 ? 10 : 12 },
-      bodyFont: { size: window.innerWidth < 768 ? 9 : 11 },
+      titleFont: { size: 12 },
+      bodyFont: { size: 11 },
     },
   },
   animation: {
@@ -36,37 +35,10 @@ const commonOptions = {
   },
 };
 
-// Get shared mobile options
-function getMobileOptions() {
-  const isMobile = window.innerWidth < 768;
-  return {
-    scales: {
-      y: {
-        beginAtZero: true,
-        grid: { color: "rgba(0, 0, 0, 0.05)" },
-        ticks: {
-          font: { size: isMobile ? 9 : 12 },
-          maxTicksLimit: isMobile ? 5 : 10,
-        },
-      },
-      x: {
-        grid: { display: false },
-        ticks: {
-          font: { size: isMobile ? 9 : 12 },
-          maxTicksLimit: isMobile ? 5 : 10,
-        },
-      },
-    },
-  };
-}
-
-// Initialize Inventory Trends Chart
-function initializeInventoryTrendsChart(chartData) {
-  const isMobile = window.innerWidth < 768;
-  const ctx = document.getElementById("inventoryTrendsChart");
-  if (!ctx) return null;
-
-  return new Chart(ctx.getContext("2d"), {
+// Initialize dashboard charts
+function initializeDashboardCharts(chartData) {
+  // Inventory Trends Chart
+  new Chart(document.getElementById("inventoryTrendsChart").getContext("2d"), {
     type: "line",
     data: {
       labels: chartData.inventory_trends_labels,
@@ -82,25 +54,29 @@ function initializeInventoryTrendsChart(chartData) {
           pointBackgroundColor: "#3498db",
           pointBorderColor: "#fff",
           pointBorderWidth: 2,
-          pointRadius: isMobile ? 2 : 4,
-          pointHoverRadius: isMobile ? 3 : 6,
+          pointRadius: 4,
+          pointHoverRadius: 6,
         },
       ],
     },
     options: {
       ...commonOptions,
-      ...getMobileOptions(),
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: { color: "rgba(0, 0, 0, 0.05)" },
+          ticks: { font: { size: 12 } },
+        },
+        x: {
+          grid: { display: false },
+          ticks: { font: { size: 12 } },
+        },
+      },
     },
   });
-}
 
-// Initialize Shipment Status Chart
-function initializeShipmentStatusChart(chartData) {
-  const isMobile = window.innerWidth < 768;
-  const ctx = document.getElementById("shipmentStatusChart");
-  if (!ctx) return null;
-
-  return new Chart(ctx.getContext("2d"), {
+  // Shipment Status Chart
+  new Chart(document.getElementById("shipmentStatusChart").getContext("2d"), {
     type: "pie",
     data: {
       labels: chartData.shipment_status_labels,
@@ -125,16 +101,7 @@ function initializeShipmentStatusChart(chartData) {
         ...commonOptions.plugins,
         legend: {
           ...commonOptions.plugins.legend,
-          position: isMobile ? "bottom" : "right",
-          labels: {
-            padding: isMobile ? 10 : 15,
-            usePointStyle: true,
-            pointStyle: "circle",
-            boxWidth: isMobile ? 8 : 10,
-            font: {
-              size: isMobile ? 9 : 11,
-            },
-          },
+          position: "right",
         },
       },
       animation: {
@@ -144,14 +111,9 @@ function initializeShipmentStatusChart(chartData) {
       },
     },
   });
-}
 
-// Initialize Monthly Shipments Chart
-function initializeMonthlyShipmentsChart(chartData) {
-  const ctx = document.getElementById("monthlyShipmentsChart");
-  if (!ctx) return null;
-
-  return new Chart(ctx.getContext("2d"), {
+  // Monthly Shipments Chart
+  new Chart(document.getElementById("monthlyShipmentsChart").getContext("2d"), {
     type: "bar",
     data: {
       labels: chartData.monthly_shipments_labels,
@@ -166,31 +128,29 @@ function initializeMonthlyShipmentsChart(chartData) {
     },
     options: {
       ...commonOptions,
-      ...getMobileOptions(),
-      responsive: true,
-      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: { color: "rgba(0, 0, 0, 0.05)" },
+          ticks: { font: { size: 12 } },
+        },
+        x: {
+          grid: { display: false },
+          ticks: { font: { size: 12 } },
+        },
+      },
     },
   });
-}
 
-// Initialize Top Products Chart
-function initializeTopProductsChart(chartData) {
-  const isMobile = window.innerWidth < 768;
-  const ctx = document.getElementById("topProductsChart");
-  if (!ctx) return null;
-
-  return new Chart(ctx.getContext("2d"), {
+  // Top Products Chart
+  new Chart(document.getElementById("topProductsChart").getContext("2d"), {
     type: "bar",
     data: {
-      labels: isMobile
-        ? chartData.top_products_labels.slice(0, 5)
-        : chartData.top_products_labels,
+      labels: chartData.top_products_labels,
       datasets: [
         {
           label: "Quantity",
-          data: isMobile
-            ? chartData.top_products_data.slice(0, 5)
-            : chartData.top_products_data,
+          data: chartData.top_products_data,
           backgroundColor: "#2ecc71",
           borderRadius: 5,
         },
@@ -199,41 +159,17 @@ function initializeTopProductsChart(chartData) {
     options: {
       ...commonOptions,
       indexAxis: "y",
-      responsive: true,
-      maintainAspectRatio: false,
       scales: {
         x: {
           beginAtZero: true,
           grid: { color: "rgba(0, 0, 0, 0.05)" },
-          ticks: {
-            font: { size: isMobile ? 9 : 12 },
-            maxTicksLimit: isMobile ? 5 : 10,
-          },
+          ticks: { font: { size: 12 } },
         },
         y: {
           grid: { display: false },
-          ticks: {
-            font: { size: isMobile ? 9 : 12 },
-            callback: function (value) {
-              // Truncate long product names on mobile
-              if (isMobile && this.getLabelForValue(value).length > 15) {
-                return this.getLabelForValue(value).substring(0, 12) + "...";
-              }
-              return this.getLabelForValue(value);
-            },
-          },
+          ticks: { font: { size: 12 } },
         },
       },
     },
   });
-}
-
-// Legacy function for backward compatibility
-function initializeDashboardCharts(chartData) {
-  const charts = {};
-  charts.inventoryTrendsChart = initializeInventoryTrendsChart(chartData);
-  charts.shipmentStatusChart = initializeShipmentStatusChart(chartData);
-  charts.monthlyShipmentsChart = initializeMonthlyShipmentsChart(chartData);
-  charts.topProductsChart = initializeTopProductsChart(chartData);
-  return charts;
 }
