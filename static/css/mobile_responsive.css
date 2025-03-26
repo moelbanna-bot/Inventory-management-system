@@ -5,7 +5,8 @@
   .container {
     padding-left: 15px !important;
     padding-right: 15px !important;
-    padding-bottom: 80px !important;
+    padding-bottom: 100px !important;
+    margin-bottom: 20px !important;
   }
 
   /* Typography adjustments */
@@ -29,12 +30,12 @@
 
   .container.p-5 {
     padding: 1rem !important;
-    padding-bottom: 80px !important;
+    padding-bottom: 100px !important;
   }
 
   /* Card adjustments */
   .card {
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem !important;
   }
 
   .card-body {
@@ -43,7 +44,7 @@
 
   /* Table responsive styles */
   .table-responsive {
-    margin-bottom: 70px !important;
+    margin-bottom: 90px !important;
   }
 
   .table th,
@@ -106,7 +107,7 @@
 
   /* Product cards */
   .products-container .card {
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem !important;
   }
 
   .card-img-wrapper {
@@ -130,7 +131,8 @@
   /* Pagination */
   .pagination-wrapper {
     margin-top: 1rem;
-    margin-bottom: 70px !important;
+    margin-bottom: 90px !important;
+    padding-bottom: 20px !important;
     overflow-x: auto;
   }
 
@@ -158,6 +160,7 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 0.25rem;
+    margin-bottom: 90px !important;
   }
 
   .detail-label {
@@ -196,7 +199,7 @@
   /* Data wrapper adjustments */
   .data-wrapper {
     max-height: 250px;
-    margin-bottom: 70px !important;
+    margin-bottom: 90px !important;
   }
 
   /* Supplier/Supermarket cards */
@@ -235,7 +238,17 @@
 
   /* Main content area bottom spacing */
   .main-content {
-    padding-bottom: 70px !important;
+    padding-bottom: 100px !important;
+  }
+
+  /* Table container margin */
+  .table-container {
+    margin-bottom: 90px !important;
+  }
+
+  /* Last elements in containers */
+  .container > *:last-child {
+    margin-bottom: 90px !important;
   }
 }
 

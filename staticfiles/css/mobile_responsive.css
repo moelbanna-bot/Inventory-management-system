@@ -5,6 +5,8 @@
   .container {
     padding-left: 15px !important;
     padding-right: 15px !important;
+    padding-bottom: 100px !important;
+    margin-bottom: 20px !important;
   }
 
   /* Typography adjustments */
@@ -28,11 +30,12 @@
 
   .container.p-5 {
     padding: 1rem !important;
+    padding-bottom: 100px !important;
   }
 
   /* Card adjustments */
   .card {
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem !important;
   }
 
   .card-body {
@@ -41,8 +44,7 @@
 
   /* Table responsive styles */
   .table-responsive {
-    margin: 0;
-    border: none;
+    margin-bottom: 90px !important;
   }
 
   .table th,
@@ -105,7 +107,7 @@
 
   /* Product cards */
   .products-container .card {
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem !important;
   }
 
   .card-img-wrapper {
@@ -122,13 +124,15 @@
 
   /* Badge adjustments */
   .badge {
-    font-size: 0.75rem;
-    padding: 0.35em 0.65em;
+    padding: 0.4em 0.6em;
+    font-size: 0.85em;
   }
 
   /* Pagination */
   .pagination-wrapper {
     margin-top: 1rem;
+    margin-bottom: 90px !important;
+    padding-bottom: 20px !important;
     overflow-x: auto;
   }
 
@@ -156,6 +160,7 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 0.25rem;
+    margin-bottom: 90px !important;
   }
 
   .detail-label {
@@ -194,6 +199,7 @@
   /* Data wrapper adjustments */
   .data-wrapper {
     max-height: 250px;
+    margin-bottom: 90px !important;
   }
 
   /* Supplier/Supermarket cards */
@@ -210,6 +216,39 @@
 
   .toast-container {
     padding: 0.5rem;
+    bottom: 80px !important;
+  }
+
+  /* Make purchase order ID and status more prominent */
+  .row-data .col:first-child,
+  .row-data .col:nth-child(3) {
+    font-weight: 500;
+  }
+
+  /* Smaller text for metadata on mobile */
+  .small.text-muted {
+    font-size: 0.75rem !important;
+    opacity: 0.8;
+  }
+
+  /* Improve supplier info section on mobile */
+  .supplier_info {
+    font-size: 0.9rem;
+  }
+
+  /* Main content area bottom spacing */
+  .main-content {
+    padding-bottom: 100px !important;
+  }
+
+  /* Table container margin */
+  .table-container {
+    margin-bottom: 90px !important;
+  }
+
+  /* Last elements in containers */
+  .container > *:last-child {
+    margin-bottom: 90px !important;
   }
 }
 
@@ -226,5 +265,186 @@
 
   .card-img-wrapper {
     height: 175px !important;
+  }
+}
+
+/* Mobile Profile Section */
+@media screen and (max-width: 768px) {
+  .mobile-profile-section {
+    border-bottom: 1px solid #e9ecef;
+    margin-bottom: 10px;
+  }
+
+  .mobile-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  /* Mobile Dropdown Menu */
+  .mobile-dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 0.25rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    padding: 0.5rem 0;
+  }
+
+  .mobile-dropdown-menu.show {
+    display: block;
+  }
+
+  .dropdown-link {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    color: #212529;
+    text-decoration: none;
+    gap: 10px;
+  }
+
+  .dropdown-link:hover {
+    background-color: #f8f9fa;
+  }
+
+  .dropdown-link i {
+    width: 20px;
+  }
+
+  .dropdown-divider {
+    height: 0;
+    margin: 0.5rem 0;
+    overflow: hidden;
+    border-top: 1px solid #e9ecef;
+  }
+
+  /* Hide desktop profile on mobile */
+  @media screen and (max-width: 768px) {
+    .user-profile:not(.d-none) {
+      display: none !important;
+    }
+
+    .desktop-only-nav-item {
+      display: none;
+    }
+
+    .mobile-more-menu {
+      display: block !important;
+    }
+  }
+
+  /* Main content padding */
+  .main-content {
+    padding-bottom: 80px;
+  }
+
+  /* Table container margin */
+  .table-container {
+    margin-bottom: 70px;
+  }
+
+  /* Pagination margin */
+  .pagination {
+    margin-bottom: 70px;
+  }
+
+  /* Container padding adjustment for mobile */
+  .container {
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+    max-width: 100% !important;
+    overflow-x: hidden;
+  }
+
+  /* Card adjustments for mobile */
+  .card {
+    margin-bottom: 15px;
+  }
+
+  .card-body {
+    padding: 15px;
+  }
+
+  /* Text adjustments for mobile */
+  .card-title {
+    font-size: 1.1rem;
+  }
+
+  .card-subtitle {
+    font-size: 0.9rem;
+  }
+
+  /* Icon and text alignment */
+  .card-subtitle i {
+    width: 20px;
+    text-align: center;
+    margin-right: 10px;
+  }
+
+  /* Badge adjustments */
+  .badge {
+    font-size: 0.8rem;
+    padding: 5px 10px;
+  }
+
+  /* Search bar adjustments */
+  .search-bar {
+    margin-bottom: 15px;
+  }
+
+  /* Pagination adjustments */
+  .pagination-wrapper {
+    margin-bottom: 70px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Main content padding */
+  .main-content {
+    padding-bottom: 80px;
+  }
+
+  /* Table container margin */
+  .table-container {
+    margin-bottom: 70px;
+  }
+
+  /* Container min-height adjustment */
+  .container[style*="min-height"] {
+    min-height: calc(100vh - 150px) !important;
+  }
+
+  /* Row margins */
+  .row {
+    margin-left: -10px;
+    margin-right: -10px;
+  }
+
+  /* Column padding */
+  .col-12 {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  /* Modal adjustments */
+  .modal-dialog {
+    margin: 10px;
+    max-width: calc(100% - 20px);
+  }
+
+  .modal-body {
+    padding: 15px;
+  }
+
+  /* Form adjustments */
+  .form-control {
+    font-size: 16px; /* Prevents iOS zoom on input focus */
   }
 }
