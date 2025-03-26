@@ -1,0 +1,21 @@
+{% load static %}
+<div class="row d-flex justify-content-center align-items-center">
+    <div class="col-12 col-md-9 mb-3 mb-md-0 col-xl-10">
+        <form method="GET" class="">
+            <div class="input-group" id="search-bar">
+                <input type="text" class="form-control rounded-start-3" name="search"
+                       placeholder="Search products..."
+                >
+            </div>
+        </form>
+    </div>
+    {% if user.is_authenticated and user.is_superuser %}
+        <div class="col-12 col-md-3 col-xl-2">
+            <button class="button-primary w-100" type="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#productModal">
+                Add Product
+            </button>
+        </div>
+    {% endif %}
+</div> 

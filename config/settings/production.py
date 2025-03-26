@@ -22,7 +22,7 @@ logging.basicConfig(
 DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 
 # Use environment variables or fallback to hardcoded values for Railway
-ALLOWED_HOSTS = ["web-production-f2a6e.up.railway.app"]
+ALLOWED_HOSTS = ["web-production-f2a6e.up.railway.app","127.0.0.1"]
 logging.info(f"ALLOWED_HOSTS set to: {ALLOWED_HOSTS}")
 
 # CSRF and CORS settings

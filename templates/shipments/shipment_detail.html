@@ -18,7 +18,7 @@
                     <form method="post" action="{% url 'shipment-action' shipment.reference_number 'confirm' %}"
                           class="d-inline">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-confirm
+                        <button type="submit" class="btn btn-confirm shipment-mobile
                         ">
                             <i class="fas fa-check-circle me-2"></i>Confirm Shipment
                         </button>
@@ -28,7 +28,7 @@
                     <form method="post" action="{% url 'shipment-action' shipment.reference_number 'ship' %}"
                           class="d-inline">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary shipment-mobile">
                             <i class="fas fa-truck me-2"></i>Mark as Shipped
                         </button>
                     </form>
@@ -37,7 +37,7 @@
                     <form method="post" action="{% url 'shipment-action' shipment.reference_number 'deliver' %}"
                           class="d-inline">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-success">
+                        <button type="submit" class="btn btn-success shipment-mobile">
                             <i class="fas fa-box-open me-2"></i>Mark as Delivered
                         </button>
                     </form>
@@ -46,7 +46,7 @@
                     <form method="post" action="{% url 'shipment-action' shipment.reference_number 'cancel' %}"
                           class="d-inline">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-danger">
+                        <button type="submit" class="btn btn-danger shipment-mobile">
                             <i class="fas fa-times-circle me-2"></i>Cancel Shipment
                         </button>
                     </form>

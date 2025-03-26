@@ -11,7 +11,7 @@ from orders.models import Order
 from .models import Product
 from shipments.models import Shipment, Supplier
 from .forms import ProductForm
-from accounts.permissions import is_manager
+from accounts.permissions import is_manager, is_admin, AdminRequiredMixin
 from django.db.models.functions import TruncMonth
 from datetime import datetime, timedelta
 from django.db.models import Count, Sum, F
@@ -50,19 +50,17 @@ class ProductListView(LoginRequiredMixin, ListView):
 
 # Create your views here.
 class AddProduct(LoginRequiredMixin, View):
-
     def post(self, request):
-        if not is_manager(request.user):
-            return self.handle_no_permission()
+        if not is_admin(request.user):
+            messages.error(request, "Only administrators can add products.")
+            return redirect("product-list")
 
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
             product = form.save()
             messages.success(request, f"Product '{product.name}' added successfully!")
-
             return redirect("product-list")
         else:
-            # Add show_modal flag to indicate we need to reopen the modal
             products = Product.objects.all()
             return render(
                 request,
@@ -73,8 +71,9 @@ class AddProduct(LoginRequiredMixin, View):
 
 class EditProduct(LoginRequiredMixin, View):
     def get(self, request, slug):
-        if not is_manager(request.user):
-            return self.handle_no_permission()
+        if not is_admin(request.user):
+            messages.error(request, "Only administrators can edit products.")
+            return redirect("product-list")
         try:
             product = Product.objects.get(slug=slug)
             form = ProductForm(instance=product)
@@ -93,6 +92,9 @@ class EditProduct(LoginRequiredMixin, View):
             return redirect("product-list")
 
     def post(self, request, slug):
+        if not is_admin(request.user):
+            messages.error(request, "Only administrators can edit products.")
+            return redirect("product-list")
         try:
             product = Product.objects.get(slug=slug)
             form = ProductForm(request.POST, request.FILES, instance=product)
@@ -102,7 +104,6 @@ class EditProduct(LoginRequiredMixin, View):
                     request, f"Product '{product.name}' updated successfully!"
                 )
                 return redirect("product-list")
-
             else:
                 return render(
                     request,
@@ -121,6 +122,9 @@ class EditProduct(LoginRequiredMixin, View):
 
 class DeleteProduct(LoginRequiredMixin, View):
     def post(self, request, slug):
+        if not is_admin(request.user):
+            messages.error(request, "Only administrators can delete products.")
+            return redirect("product-list")
         try:
             product = Product.objects.get(slug=slug)
             product_name = product.name

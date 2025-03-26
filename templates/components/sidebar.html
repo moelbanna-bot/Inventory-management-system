@@ -4,50 +4,69 @@
     <div
             class="sidebar-header d-flex align-items-center justify-content-between py-3 mb-4"
     >
-        <a href="{% url 'home' %}" class="home-icon"><i class="fas fa-home"></i></a>
-        <a href="{% url 'home' %}" class="toggle-icon" id="sidebarToggle"
+        <a href="#" class="home-icon"><i class="fas fa-home"></i></a>
+        <a href="#" class="toggle-icon" id="sidebarToggle"
         ><i class="fas fa-bars"></i
         ></a>
     </div>
     <ul class="nav flex-column">
-        <li class="nav-item">
+        <li class="nav-item main-nav-item">
             <a class="nav-link active" href="{% url 'home' %}">
                 <i class="fas fa-tachometer-alt"></i> <span>Dashboard</span>
             </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item main-nav-item">
             <a class="nav-link" href="{% url 'product-list' %}">
                 <i class="fas fa-box"></i> <span>Inventory</span>
             </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item main-nav-item">
             <a class="nav-link" href="{% url 'shipment-list' %}">
                 <i class="fas fa-truck"></i> <span>Shipments</span>
             </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item main-nav-item">
             <a class="nav-link" href="{% url 'orders:orders-list' %}">
                 <i class="fas fa-shopping-cart"></i> <span>Orders</span>
             </a>
         </li>
-        <li class="nav-item">
+        <!-- More dropdown for mobile -->
+        <li class="nav-item mobile-more-menu">
+            <a class="nav-link" href="#" id="mobileMoreMenuToggle">
+                <i class="fas fa-ellipsis-h"></i> <span>More</span>
+            </a>
+            <div class="mobile-dropdown-menu" id="mobileDropdownMenu">
+                <a class="dropdown-link" href="{% url 'suppliers-list' %}">
+                    <i class="fa-solid fa-industry"></i><span>Suppliers</span>
+                </a>
+                <a class="dropdown-link" href="{% url 'orders:supermarkets-list' %}">
+                    <i class="fa-solid fa-store"></i><span>SuperMarkets</span>
+                </a>
+                {% if user.is_authenticated and user.is_staff %}
+                    <a class="dropdown-link" href="{% url 'register' %}">
+                        <i class="fa-solid fa-user"></i><span>Add Employee</span>
+                    </a>
+                {% endif %}
+            </div>
+        </li>
+        <!-- Desktop-only menu items -->
+        <li class="nav-item desktop-only-nav-item">
             <a class="nav-link" href="{% url 'suppliers-list' %}">
                 <i class="fa-solid fa-industry"></i><span>Suppliers</span>
             </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item desktop-only-nav-item">
             <a class="nav-link" href="{% url 'orders:supermarkets-list' %}">
                 <i class="fa-solid fa-store"></i><span>SuperMarkets</span>
             </a>
         </li>
         {% if user.is_authenticated and user.is_staff %}
-            <li class="nav-item">
+            <li class="nav-item desktop-only-nav-item">
                 <a class="nav-link" href="{% url 'register' %}">
                     <i class="fa-solid fa-user"></i><span>Add Employee</span>
                 </a>
             </li>
         {% endif %}
-
     </ul>
     <div class="user-profile mt-auto">
         <div class="d-flex align-items-center p-2 gap-3" id="userProfileToggle">
@@ -63,7 +82,6 @@
             <i class="fas fa-chevron-down ms-auto"></i>
         </div>
         <form action="{% url 'logout' %}" method="POST" style="display:inline;">
-
             {% csrf_token %}
             <div class="account-dropdown" id="accountDropdown">
                 <button type="submit" class="dropdown-item logout-btn">
