@@ -37,7 +37,7 @@ def health_check(request):
 
 urlpatterns = [
     path("", DashboardView.as_view(), name="home"),
-    path("admin/", admin.site.urls),
+    path("admin/johncena/rko", admin.site.urls),
     path("products/", include("products.urls")),
     path("accounts/", include("accounts.urls")),
     path("orders/", include("orders.urls")),
